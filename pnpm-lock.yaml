@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@grammyjs/menu':
+        specifier: ^1.2.2
+        version: 1.2.2(grammy@1.29.0)
       axios:
         specifier: ^1.7.4
         version: 1.7.4
@@ -36,6 +39,12 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
+
+  '@grammyjs/menu@1.2.2':
+    resolution: {integrity: sha512-qrlGn9KFoy9ivVkC4wQnuCpgWc59VzDdj7r7szt432UnddKPk8NZDwVE1HDiaNnuyDV0K58OCp165dXrijmLWw==}
+    engines: {node: '>=12.20.0 || >=14.13.1'}
+    peerDependencies:
+      grammy: ^1.0.0
 
   '@grammyjs/types@3.13.0':
     resolution: {integrity: sha512-Oyq6fBuVPyX6iWvxT/0SxJvNisC9GHUEkhZ60qJBHRmwNX4hIcOfhrNEahicn3K9SYyreGPVw3d9wlLRds83cw==}
@@ -614,6 +623,10 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+
+  '@grammyjs/menu@1.2.2(grammy@1.29.0)':
+    dependencies:
+      grammy: 1.29.0
 
   '@grammyjs/types@3.13.0': {}
 
