@@ -8,7 +8,7 @@ dotenv.config();
 
 const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN!);
 const chainId = process.env.CHAIN_ID!;
-const baseURL = "https//app.dsponsor.com";
+const baseURL = "https://app.dsponsor.com";
 
 let profileAddress: Address | undefined = undefined;
 let awaitingAddress = false;
