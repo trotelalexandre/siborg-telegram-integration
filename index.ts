@@ -142,9 +142,18 @@ bot.command("config", (ctx) => {
 });
 
 bot.command("setup", (ctx) => {
-  const offerId: number = parseInt(ctx.match);
+  if (!ctx.match) {
+    ctx.reply(
+      "Please provide the offer ID, display type, and frequency in minutes. Example: /setup 1 5"
+    );
+    return;
+  }
+
+  const args: string[] = ctx.match.split(" ");
+
+  const offerId: number = parseInt(args[0]);
   const type: DisplayType = displayType ?? "DynamicBanner";
-  const frequency: number = parseInt(ctx.match);
+  const frequency: number = parseInt(args[1]);
 
   // make a cron job to fetch the ads every frequency minutes and display them on the channel
   cron.schedule(`*/${frequency} * * * *`, async () => {
@@ -161,6 +170,11 @@ bot.command("setup", (ctx) => {
 // fetching ads test
 if (testEnv) {
   bot.command("fetchAds", async (ctx) => {
+    if (!ctx.match) {
+      ctx.reply("Please provide the offer ID.");
+      return;
+    }
+
     const offerId: number = parseInt(ctx.match);
     const type: DisplayType = displayType ?? "DynamicBanner";
 
