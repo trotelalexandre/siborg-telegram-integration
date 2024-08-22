@@ -2,7 +2,7 @@ import { Bot, InlineKeyboard } from "grammy";
 import { Menu } from "@grammyjs/menu";
 import dotenv from "dotenv";
 import { isAddress } from "viem";
-import { fetchAds } from "./relayer";
+import { fetchAds, fetchTokenIdsFromOfferId } from "./relayer";
 import cron from "node-cron";
 
 // types
@@ -17,13 +17,32 @@ const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN!);
 
 // config variables
 const chainId: number = parseInt(process.env.CHAIN_ID!);
-const baseURL: string = "https://app.dsponsor.com";
+const baseURL: string = process.env.BASE_URL ?? "https://app.dsponsor.com";
+const testEnv: boolean = process.env.TEST_ENV === "true";
 
 // global variables
 let profileAddress: Address | undefined = undefined;
 let awaitingAddress: boolean = false;
 
 let displayType: DisplayType | undefined = undefined;
+
+// suggest commands
+bot.api.setMyCommands([
+  {
+    command: "start",
+    description: "Get started to manage your offers, tokens, and ads",
+  },
+  { command: "help", description: "Get help and learn how to use the bot" },
+  {
+    command: "config",
+    description:
+      "Configure the bot by setting your address, display type, etc.",
+  },
+  {
+    command: "setup",
+    description: "Setup the bot to display ads on your channel",
+  },
+]);
 
 // display type menu
 const displayTypeMenu = new Menu("display-type-menu")
@@ -129,11 +148,37 @@ bot.command("setup", (ctx) => {
 
   // make a cron job to fetch the ads every frequency minutes and display them on the channel
   cron.schedule(`*/${frequency} * * * *`, async () => {
-    const ads = await fetchAds(chainId, offerId, type);
+    const ads = await fetchAds(offerId, type);
 
     // TODO : display ads on the channel
   });
+
+  ctx.reply(
+    `Ad setup complete. Ads will be fetched every ${frequency} minutes.`
+  );
 });
+
+// fetching ads test
+if (testEnv) {
+  bot.command("fetchAds", async (ctx) => {
+    const offerId: number = parseInt(ctx.match);
+    const type: DisplayType = displayType ?? "DynamicBanner";
+
+    console.log(`Fetching ads for offer ${offerId} with type ${type}...`);
+    const ads = await fetchTokenIdsFromOfferId(offerId);
+    console.log(ads);
+
+    await ctx.reply("Ads have been fetched.");
+
+    if (ads) {
+      ads?.forEach(async (tokenId: bigint, index: number) => {
+        await ctx.reply(
+          `Token ID n°${index} : ${baseURL}/${chainId}/offer/${offerId}/${tokenId}`
+        );
+      });
+    }
+  });
+}
 
 // address configuration
 bot.on("message:text", (ctx) => {
@@ -164,7 +209,7 @@ bot.on("message", (ctx) => {
   );
 });
 
-console.log("Starting the bot...");
+console.log(`Starting the bot with chain ID ${chainId}...`);
 bot.start();
 
 bot.catch((err) => {
@@ -172,7 +217,7 @@ bot.catch((err) => {
 
   // wait for 5 seconds before restarting the bot
   setTimeout(() => {
-    console.log("Restarting the bot...");
+    console.log(`Restarting the bot with chain ID ${chainId}...`);
     bot.start();
   }, 5000);
 });
