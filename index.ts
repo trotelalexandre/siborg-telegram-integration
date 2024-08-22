@@ -2,25 +2,64 @@ import { Bot, InlineKeyboard } from "grammy";
 import { Menu } from "@grammyjs/menu";
 import dotenv from "dotenv";
 import { isAddress } from "viem";
-import type { Address } from "viem";
+import { fetchAds } from "./relayer";
+import cron from "node-cron";
 
+// types
+import type { Address } from "viem";
+import type { DisplayType } from "./types";
+
+// load environment variables
 dotenv.config();
 
+// create a new bot
 const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN!);
-const chainId = process.env.CHAIN_ID!;
-const baseURL = "https://app.dsponsor.com";
 
+// config variables
+const chainId: number = parseInt(process.env.CHAIN_ID!);
+const baseURL: string = "https://app.dsponsor.com";
+
+// global variables
 let profileAddress: Address | undefined = undefined;
-let awaitingAddress = false;
+let awaitingAddress: boolean = false;
 
-// onboarding menu
-const onboardingMenu = new Menu("onboarding-menu")
-  .text("Configure the bot", (ctx) => {
+let displayType: DisplayType | undefined = undefined;
+
+// display type menu
+const displayTypeMenu = new Menu("display-type-menu")
+  .text("Clickable Logo Grid", (ctx) => {
+    displayType = "ClickableLogoGrid";
+    ctx.reply("Display type has been set to Clickable Logo Grid.");
+  })
+  .row()
+  .text("Dynamic Banner", (ctx) => {
+    displayType = "DynamicBanner";
+    ctx.reply("Display type has been set to Dynamic Banner.");
+  });
+
+// config menu
+const configMenu = new Menu("config-menu")
+  .text("Add my address", (ctx) => {
     awaitingAddress = true;
     ctx.reply(
       "To configure the bot, you need to specify your address. Please provide your address."
     );
   })
+  .row()
+  .text("Change display type", (ctx) => {
+    ctx.reply("You can change the display type here.", {
+      reply_markup: displayTypeMenu,
+    });
+  });
+
+// onboarding menu
+const onboardingMenu = new Menu("onboarding-menu")
+  .text("Configure the bot", (ctx) => {
+    ctx.reply("You can configure the bot here.", {
+      reply_markup: configMenu,
+    });
+  })
+  .row()
   .text("Manage your offer and your tokens", (ctx) => {
     if (!profileAddress) {
       const noAddressKeyboard = new InlineKeyboard().url(
@@ -45,7 +84,7 @@ const onboardingMenu = new Menu("onboarding-menu")
         )
         .url("View statistics", `${baseURL}/profile/${profileAddress}`);
 
-      ctx.reply("You can manage your offers and tokens here", {
+      ctx.reply("You can manage your offers and tokens here.", {
         reply_markup: addressKeyboard,
       });
     }
@@ -58,6 +97,8 @@ const exitAddressMenu = new Menu("exit-address-menu").text("Exit", (ctx) => {
 });
 
 // interactive menu
+bot.use(displayTypeMenu);
+bot.use(configMenu);
 bot.use(onboardingMenu);
 bot.use(exitAddressMenu);
 
@@ -69,6 +110,29 @@ bot.command("start", (ctx) => {
       reply_markup: onboardingMenu,
     }
   );
+});
+
+bot.command("help", (ctx) => {
+  ctx.reply("");
+});
+
+bot.command("config", (ctx) => {
+  ctx.reply("You can configure the bot here.", {
+    reply_markup: configMenu,
+  });
+});
+
+bot.command("setup", (ctx) => {
+  const offerId: number = parseInt(ctx.match);
+  const type: DisplayType = displayType ?? "DynamicBanner";
+  const frequency: number = parseInt(ctx.match);
+
+  // make a cron job to fetch the ads every frequency minutes and display them on the channel
+  cron.schedule(`*/${frequency} * * * *`, async () => {
+    const ads = await fetchAds(chainId, offerId, type);
+
+    // TODO : display ads on the channel
+  });
 });
 
 // address configuration
@@ -102,3 +166,13 @@ bot.on("message", (ctx) => {
 
 console.log("Starting the bot...");
 bot.start();
+
+bot.catch((err) => {
+  console.error(err);
+
+  // wait for 5 seconds before restarting the bot
+  setTimeout(() => {
+    console.log("Restarting the bot...");
+    bot.start();
+  }, 5000);
+});
