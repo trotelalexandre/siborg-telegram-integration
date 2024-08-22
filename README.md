@@ -2,7 +2,7 @@
 
 ## Configuration
 
-Please add the Telegram Bot Token in the `.env.local` file.
+Please add the Telegram Bot Token in the `.env` file.
 
 ```env
 TELEGRAM_BOT_TOKEN=[YOURTOKEN]
