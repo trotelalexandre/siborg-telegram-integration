@@ -29,6 +29,8 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
     const key = args[0];
     const value = parseInt(args[1]);
 
+    await ctx.reply(`Updating configuration with ${key} set to ${value}...`);
+
     if (isNaN(value)) {
       await ctx.reply(
         "Please provide a valid number for the frequency or offer id."
