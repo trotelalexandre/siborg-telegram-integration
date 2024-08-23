@@ -1,5 +1,11 @@
 {
   "outputDirectory": ".",
   "installCommand": "pnpm i",
-  "buildCommand": "pnpm ts-node scripts/build.ts"
+  "buildCommand": "pnpm ts-node scripts/build.ts",
+  "crons": [
+    {
+      "path": "/api/publishAdFrequentlyTask",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }

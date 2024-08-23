@@ -1,9 +1,15 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
-import { publishAdFrequentlyTask } from "../cron-tasks/publishAdFrequently";
-import { TEST_MODE_ENABLED } from "../env";
+import { APP_URL, TEST_MODE_ENABLED } from "../env";
 
 export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("setup", async (ctx) => {
+    const chatId = ctx?.chat?.id;
+
+    if (!chatId) {
+      await ctx.reply("This command is only available in a group chat.");
+      return;
+    }
+
     if (TEST_MODE_ENABLED) {
       if (!ctx.match) {
         await ctx.reply(
@@ -23,7 +29,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
       const frequency: number = 1;
 
-      await publishAdFrequentlyTask(ctx, frequency, offerId);
+      await callPublishAdEndpoint(frequency, offerId, chatId, ctx);
     } else {
       if (!ctx.match) {
         await ctx.reply(
@@ -56,7 +62,32 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
         return;
       }
 
-      await publishAdFrequentlyTask(ctx, frequency, offerId);
+      await callPublishAdEndpoint(frequency, offerId, chatId, ctx);
     }
   });
 };
+
+async function callPublishAdEndpoint(
+  frequency: number,
+  offerId: number,
+  chatId: number,
+  ctx: Context
+) {
+  try {
+    const response = await fetch(
+      `${APP_URL}/api/publishAd?frequencyData=${frequency}&offerIdData=${offerId}&telegramChatIdData=${chatId}`
+    );
+    const result = await response.json();
+
+    if (response.ok) {
+      await ctx.reply(
+        `Ad setup complete. Ads will be fetched every ${frequency} minutes.`
+      );
+    } else {
+      await ctx.reply(`Failed to set up ad: ${result.message}`);
+    }
+  } catch (error) {
+    console.error("Error calling publishAd endpoint:", error);
+    await ctx.reply("An error occurred while setting up the ad.");
+  }
+}
