@@ -1,15 +1,15 @@
-import { bot } from "./bot";
-import { businessCommand } from "./commands/business";
-import { configCommand } from "./commands/config";
-import { helpCommand } from "./commands/help";
-import { setupCommand } from "./commands/setup";
-import { startCommand } from "./commands/start";
-import { suggestCommands } from "./commands/suggest";
-import { displayAdCommand } from "./commands/test/displayAd";
-import { fetchAdsCommand } from "./commands/test/fetchAds";
-import { CHAIN_ID } from "./env";
-import { addressHandler } from "./handlers/address";
-import { messageFallbackHandler } from "./handlers/messageFallback";
+import { bot } from "../src/bot";
+import { businessCommand } from "../src/commands/business";
+import { configCommand } from "../src/commands/config";
+import { helpCommand } from "../src/commands/help";
+import { setupCommand } from "../src/commands/setup";
+import { startCommand } from "../src/commands/start";
+import { suggestCommands } from "../src/commands/suggest";
+import { displayAdCommand } from "../src/commands/test/displayAd";
+import { fetchAdsCommand } from "../src/commands/test/fetchAds";
+import { CHAIN_ID } from "../src/env";
+import { addressHandler } from "../src/handlers/address";
+import { messageFallbackHandler } from "../src/handlers/messageFallback";
 
 // commands
 suggestCommands();

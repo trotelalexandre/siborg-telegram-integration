@@ -1,4 +1,4 @@
-import { bot } from "../../api/bot";
+import { bot } from "../bot";
 import { configMenu } from "../menus/config";
 
 export const configCommand = () => {
