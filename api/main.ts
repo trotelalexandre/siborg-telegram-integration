@@ -17,7 +17,7 @@ if (!TELEGRAM_BOT_TOKEN) {
 
 export const bot = new Bot(TELEGRAM_BOT_TOKEN);
 
-//export default webhookCallback(bot, "std/http");
+export default webhookCallback(bot, "std/http");
 
 // init menus
 initMenus(bot);
