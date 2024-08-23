@@ -15,6 +15,8 @@ export const helpCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `\\- Use the /config command to add your address and configure your settings\\.\n` +
         `\\- Use the /setup command to schedule ad displays on your channel\\. You need to specify the offer id and the frequency in minutes\\.\n` +
         `\\- If you encounter any issues, try restarting the bot or contact support\\.\n\n` +
+        `\\- If you have some issues, type /status to check the bot status\\.\n\n` +
+        `*Note:* This bot is still in development\\. We appreciate your feedback and suggestions\\.\n\n` +
         `For more details, visit our [website](${BASE_URL})\\.`,
       {
         parse_mode: "MarkdownV2",
