@@ -16,7 +16,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
       if (isNaN(offerId)) {
         await ctx.reply(
-          "Please provide the offer id. Example: /setup [offerId] [frequency]"
+          "Please provide the offer id. Example: /setup [offerId]"
         );
         return;
       }
