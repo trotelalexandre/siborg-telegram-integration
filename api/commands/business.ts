@@ -1,4 +1,4 @@
-import { bot } from "../../src/bot";
+import { bot } from "../../api/bot";
 import { businessMenu } from "../menus/business";
 
 export const businessCommand = () => {

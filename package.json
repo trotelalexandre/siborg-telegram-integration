@@ -2,11 +2,11 @@
   "name": "siborg-telegram-integration",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.ts",
+  "main": "api/main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node build/main",
-    "dev": "ts-node-dev src/main",
+    "dev": "ts-node-dev api/main",
     "build": "tsc"
   },
   "keywords": [],

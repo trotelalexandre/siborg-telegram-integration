@@ -32,24 +32,24 @@ This repository follows a modular architecture, dividing functionality into diff
 
 ### Directory Structure
 
-- **src/commands**: Contains command handlers that define the actions to be taken when specific bot commands are issued.
+- **api/commands**: Contains command handlers that define the actions to be taken when specific bot commands are issued.
 
-  - **src/commands/suggest**: Command suggestions or recommendations.
-  - **src/commands/test**: Test commands used primarily in a testing environment to verify bot functionalities.
+  - **api/commands/suggest**: Command suggestions or recommendations.
+  - **api/commands/test**: Test commands used primarily in a testing environment to verify bot functionalities.
 
-- **src/cron-task**: Contains scheduled tasks using cron jobs. This directory is used for scheduling recurring bot actions, such as fetching and displaying ads at regular intervals.
+- **api/cron-task**: Contains scheduled tasks using cron jobs. This directory is used for scheduling recurring bot actions, such as fetching and displaying ads at regular intervals.
 
-- **src/handlers**: Contains message and event handlers that process incoming messages and events from the bot. It is responsible for the logic behind different user interactions.
+- **api/handlers**: Contains message and event handlers that process incoming messages and events from the bot. It is responsible for the logic behind different user interactions.
 
-- **src/menus**: Defines interactive menus that the bot presents to users. This directory contains different menu configurations to handle various user actions and settings.
+- **api/menus**: Defines interactive menus that the bot presents to users. This directory contains different menu configurations to handle various user actions and settings.
 
-- **src/relayer**: Handles external API calls and integrations. This module is responsible for relaying data between the bot and external services, such as fetching ads or managing offers.
+- **api/relayer**: Handles external API calls and integrations. This module is responsible for relaying data between the bot and external services, such as fetching ads or managing offers.
 
-- **src/states**: Contains shared state variables and functions to manage the bot's state. This module ensures consistency across different parts of the application.
+- **api/states**: Contains shared state variables and functions to manage the bot's state. This module ensures consistency across different parts of the application.
 
-- **src/types**: Defines TypeScript types and interfaces used throughout the application for type safety and code clarity.
+- **api/types**: Defines TypeScript types and interfaces used throughout the application for type safety and code clarity.
 
-- **src/utils**: Utility functions and helpers that are used across various modules. These functions provide common functionality that can be reused.
+- **api/utils**: Utility functions and helpers that are used across various modules. These functions provide common functionality that can be reused.
 
 ### Main Files
 
