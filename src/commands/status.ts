@@ -11,14 +11,14 @@ import {
 export const statusCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("status", async (ctx) => {
     await ctx.reply(
-      `*Status*: [Online](${BASE_URL})\n\n` +
-        `*Current Chain ID*: ${CHAIN_ID}\n\n` +
-        `*Current Chat ID*: ${ctx.chat?.id}\n\n` +
+      `*Status*: [Online](${BASE_URL?.replace("-", "\\-")})\n\n` +
+        `*Current Chain ID*: ${CHAIN_ID?.toString()?.replace("-", "\\-")}\n\n` +
+        `*Current Chat ID*: ${ctx.chat?.id?.toString()?.replace("-", "\\-")}\n\n` +
         `*Test Mode*: ${TEST_MODE_ENABLED ? "Enabled" : "Disabled"}\n\n` +
-        `*APP_URL*: ${APP_URL}\n\n` +
-        `*WEBHOOK_URL*: ${WEBHOOK_URL}\n\n` +
+        `*APP_URL*: ${APP_URL?.replace("-", "\\-")}\n\n` +
+        `*WEBHOOK_URL*: ${WEBHOOK_URL?.replace("-", "\\-")}\n\n` +
         `*Environment Variables*: ${ALL_ENV ? "All set" : "Missing"}\n\n` +
-        `*Environment*: ${process.env.NODE_ENV}\n\n` +
+        `*Environment*: ${process.env.NODE_ENV ? process.env.NODE_ENV?.replace("-", "\\-") : "undefined"}\n\n` +
         `*Note*: This bot is still in development\\. We appreciate your feedback and suggestions\\.`,
 
       {
