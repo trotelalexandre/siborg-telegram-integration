@@ -1,8 +1,8 @@
-import { bot } from "../../../api/main";
+import type { Api, Bot, Context, RawApi } from "grammy";
 import { BASE_URL, CHAIN_ID, TEST_ENV } from "../../env";
 import fetchTokenIdsFromOfferId from "../../utils/fetchTokenIdsFromOfferId";
 
-export const fetchAdsCommand = () => {
+export const fetchAdsCommand = (bot: Bot<Context, Api<RawApi>>) => {
   if (TEST_ENV) {
     bot.command("fetchAds", async (ctx) => {
       if (!ctx.match) {

@@ -1,7 +1,7 @@
-import { bot } from "../../api/main";
+import type { Api, Bot, Context, RawApi } from "grammy";
 import { BASE_URL } from "../env";
 
-export const helpCommand = () => {
+export const helpCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("help", async (ctx) => {
     await ctx.reply(
       `*Help Menu*\n\n` +

@@ -1,9 +1,9 @@
 import { InlineKeyboard } from "grammy";
 import { BASE_URL, CHAIN_ID } from "../env";
 import { isAddress } from "viem";
-import { bot } from "../../api/main";
+import type { Api, Bot, Context, RawApi } from "grammy";
 
-export const manageCommand = () => {
+export const manageCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("manage", async (ctx) => {
     if (!ctx.match) {
       return await ctx.reply(

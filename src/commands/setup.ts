@@ -1,7 +1,7 @@
-import { bot } from "../../api/main";
+import type { Api, Bot, Context, RawApi } from "grammy";
 import { publishAdFrequentlyCommand } from "../cron-tasks/publishAdFrequently";
 
-export const setupCommand = () => {
+export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("setup", async (ctx) => {
     if (!ctx.match) {
       await ctx.reply(

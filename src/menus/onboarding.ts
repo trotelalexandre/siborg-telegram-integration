@@ -1,7 +1,6 @@
 import { Menu } from "@grammyjs/menu";
 import { InlineKeyboard } from "grammy";
 import { BASE_URL, CHAIN_ID } from "../env";
-import { bot } from "../../api/main";
 
 export const onboardingMenu = new Menu("onboarding-menu")
   .text("Start to display ads", async (ctx) => {
@@ -18,5 +17,3 @@ export const onboardingMenu = new Menu("onboarding-menu")
       reply_markup: noAddressKeyboard,
     });
   });
-
-bot.use(onboardingMenu);

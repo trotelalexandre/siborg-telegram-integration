@@ -1,8 +1,8 @@
-import { bot } from "../../../api/main";
+import type { Api, Bot, Context, RawApi } from "grammy";
 import { BASE_URL, CHAIN_ID, TEST_ENV } from "../../env";
 import fetchAd from "../../utils/fetchAd";
 
-export const displayAdCommand = () => {
+export const displayAdCommand = (bot: Bot<Context, Api<RawApi>>) => {
   if (TEST_ENV) {
     bot.command("displayAd", async (ctx) => {
       if (!ctx.match) {

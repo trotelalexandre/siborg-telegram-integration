@@ -1,6 +1,6 @@
-import { bot } from "../../../api/main";
+import type { Api, Bot, Context, RawApi } from "grammy";
 
-export const suggestCommands = () => {
+export const suggestCommands = (bot: Bot<Context, Api<RawApi>>) => {
   bot.api.setMyCommands([
     {
       command: "start",

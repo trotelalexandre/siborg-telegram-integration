@@ -19,17 +19,17 @@ export const bot = new Bot(TELEGRAM_BOT_TOKEN);
 //export default webhookCallback(bot, "std/http");
 
 // commands
-suggestCommands();
-startCommand();
-helpCommand();
-setupCommand();
-manageCommand();
-businessCommand();
-fetchAdsCommand(); // test
-displayAdCommand(); // test
+suggestCommands(bot);
+startCommand(bot);
+helpCommand(bot);
+setupCommand(bot);
+manageCommand(bot);
+businessCommand(bot);
+fetchAdsCommand(bot); // test
+displayAdCommand(bot); // test
 
 // handlers
-messageFallbackHandler();
+messageFallbackHandler(bot);
 
 console.log(`Starting the bot with chain id ${CHAIN_ID}...`);
 bot.start();
