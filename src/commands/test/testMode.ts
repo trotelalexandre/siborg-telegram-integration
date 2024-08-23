@@ -3,7 +3,7 @@ import { TEST_ENV } from "../../env";
 
 export const testModeCommand = (bot: Bot<Context, Api<RawApi>>) => {
   if (TEST_ENV) {
-    bot.command("testMode", async (ctx) => {
+    bot.command("testmode", async (ctx) => {
       await ctx.reply("Test mode is enabled.");
     });
   }
