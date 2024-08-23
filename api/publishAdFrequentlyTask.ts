@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.log(`Ad fetched and displayed on chat id: ${chatId}`);
 
       config.lastPublish = now;
-      await kv.set(chatIdsKey, config);
+      await kv.set(chatId?.toString(), config);
     }
 
     res.status(200).json({ message: "Ad fetched and displayed." });
