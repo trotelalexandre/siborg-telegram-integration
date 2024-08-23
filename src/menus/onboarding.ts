@@ -7,8 +7,7 @@ export const onboardingMenu = new Menu("onboarding-menu")
     await ctx.reply(
       `To start displaying ads, you need to enter the following commands: /setup [offerId] [frequency]\n\n` +
         `Example: /setup 1 5 (This will display ads from offer id 1 every 5 minutes)\n\n` +
-        `If you don't have an offer yet, you can create one by clicking the button below\n\n` +
-        `Create a new offer`,
+        `If you don't have an offer yet, you can create one by clicking the button below\n\n`,
       {
         reply_markup: new InlineKeyboard().url(
           "Create a new offer",
