@@ -18,6 +18,10 @@ if (!TELEGRAM_BOT_TOKEN) {
 
 export const bot = new Bot(TELEGRAM_BOT_TOKEN);
 
+// set webhook
+const endpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook?url=${process.env.WEBHOOK_URL}`;
+bot.api.setWebhook(endpoint);
+
 // init menus
 initMenus(bot);
 
