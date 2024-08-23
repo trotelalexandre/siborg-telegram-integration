@@ -19,6 +19,8 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
     const args: string[] = ctx.match.split(" ").slice(1);
 
+    await ctx.reply(`Checking args: ${args}`);
+
     if (args.length < 2) {
       await ctx.reply(
         "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
