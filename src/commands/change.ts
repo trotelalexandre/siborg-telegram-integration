@@ -17,7 +17,7 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
       return;
     }
 
-    const args: string[] = ctx.match.split(" ").slice(1);
+    const args: string[] = ctx.match.split(" ");
 
     await ctx.reply(`Checking args: ${args}`);
 

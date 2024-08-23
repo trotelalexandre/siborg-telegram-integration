@@ -48,7 +48,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
         return;
       }
 
-      const args: string[] = ctx.match.split(" ").slice(1);
+      const args: string[] = ctx.match.split(" ");
 
       if (args.length < 2) {
         await ctx.reply(
