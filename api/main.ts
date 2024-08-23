@@ -17,8 +17,6 @@ if (!TELEGRAM_BOT_TOKEN) {
 
 export const bot = new Bot(TELEGRAM_BOT_TOKEN);
 
-export default webhookCallback(bot, "std/http");
-
 // init menus
 initMenus(bot);
 
@@ -47,3 +45,5 @@ bot.catch((err) => {
     bot.start();
   }, 5000);
 });
+
+export default webhookCallback(bot, "std/http");
