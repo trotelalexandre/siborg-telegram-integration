@@ -9,6 +9,7 @@ import { displayAdCommand } from "../src/commands/test/displayAd";
 import { fetchAdsCommand } from "../src/commands/test/fetchAds";
 import { TELEGRAM_BOT_TOKEN } from "../src/env";
 import { initMenus } from "../src/menus/init/initMenus";
+import { testModeCommand } from "./commands/test/testMode";
 
 if (!TELEGRAM_BOT_TOKEN) {
   throw new Error("TELEGRAM_BOT_TOKEN is not defined");
@@ -26,5 +27,6 @@ helpCommand(bot);
 setupCommand(bot);
 manageCommand(bot);
 businessCommand(bot);
+testModeCommand(bot); // test
 fetchAdsCommand(bot); // test
 displayAdCommand(bot); // test
