@@ -2,10 +2,28 @@ import { BASE_URL, CHAIN_ID, TEST_MODE_ENABLED } from "../src/env";
 import { bot } from "../src/bot";
 import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import fs from "fs";
+import path from "path";
+
+const CONFIG_FILE_PATH = path.resolve(__dirname, "../configurations.json");
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { frequencyData, offerIdData, telegramChatIdData } = req.query;
+  let configurations: {
+    [key: string]: { frequency: number; offerId: number; lastPublish: number };
+  } = {};
 
+  if (fs.existsSync(CONFIG_FILE_PATH)) {
+    try {
+      const data = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
+      configurations = JSON.parse(data);
+    } catch (error) {
+      console.error("Error reading configurations:", error);
+      res.status(500).json({ message: "Error reading configurations." });
+      return;
+    }
+  }
+
+  const { offerIdData, telegramChatIdData } = req.query;
   const offerId = parseInt(offerIdData as string);
   const telegramChatId = parseInt(telegramChatIdData as string);
 
@@ -14,25 +32,52 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const ad = await fetchAd(offerId).catch((error) => {
-    console.error("Error fetching ad:", error);
-    res.status(500).json({ message: "Error fetching ad." });
-  });
-
-  if (!ad) {
-    res.status(404).json({ message: "No ads found for this offer." });
+  if (isNaN(offerId) || isNaN(telegramChatId)) {
+    res.status(400).json({ message: "Invalid parameters." });
     return;
   }
 
-  await bot.api.sendPhoto(telegramChatId, ad.image, {
-    caption: `Check out this ad! ${ad.link}`,
-  });
+  const config = configurations[telegramChatId];
 
-  await bot.api.sendMessage(
-    telegramChatId,
-    `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${offerId}`
-  );
+  if (!config || config.offerId !== offerId) {
+    res.status(404).json({ message: "Configuration not found for this chat." });
+    return;
+  }
 
-  console.log(`Ad fetched and displayed on the channel.`);
-  res.status(200).json({ message: "Ad fetched and displayed." });
+  const now = Date.now();
+  const timeSinceLastPublish = now - config.lastPublish;
+
+  if (timeSinceLastPublish < config.frequency * 60 * 1000) {
+    res.status(200).json({ message: "Not yet time to publish the ad." });
+    return;
+  }
+
+  try {
+    const ad = await fetchAd(offerId);
+
+    if (!ad) {
+      res.status(404).json({ message: "No ads found for this offer." });
+      return;
+    }
+
+    await bot.api.sendPhoto(telegramChatId, ad.image, {
+      caption: `Check out this ad! ${ad.link}`,
+    });
+
+    await bot.api.sendMessage(
+      telegramChatId,
+      `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${offerId}`
+    );
+
+    console.log(`Ad fetched and displayed on the channel.`);
+
+    configurations[telegramChatId].lastPublish = now;
+
+    fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configurations, null, 2));
+
+    res.status(200).json({ message: "Ad fetched and displayed." });
+  } catch (error) {
+    console.error("Error fetching or sending ad:", error);
+    res.status(500).json({ message: "Error fetching or sending ad." });
+  }
 }

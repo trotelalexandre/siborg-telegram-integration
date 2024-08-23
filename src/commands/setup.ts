@@ -80,14 +80,18 @@ async function saveConfiguration(
 ) {
   try {
     let configurations: {
-      [key: string]: { frequency: number; offerId: number };
+      [key: string]: {
+        frequency: number;
+        offerId: number;
+        lastPublish: number;
+      };
     } = {};
     if (fs.existsSync(CONFIG_FILE_PATH)) {
       const data = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
       configurations = JSON.parse(data);
     }
 
-    configurations[chatId] = { frequency, offerId };
+    configurations[chatId] = { frequency, offerId, lastPublish: Date.now() };
 
     fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configurations, null, 2));
   } catch (error) {
@@ -103,7 +107,7 @@ async function callPublishAdEndpoint(
 ) {
   try {
     const response = await fetch(
-      `${APP_URL}/api/publishAd?frequencyData=${frequency}&offerIdData=${offerId}&telegramChatIdData=${chatId}`
+      `${APP_URL}/api/publishAd?offerIdData=${offerId}&telegramChatIdData=${chatId}`
     );
     const result = await response.json();
 
