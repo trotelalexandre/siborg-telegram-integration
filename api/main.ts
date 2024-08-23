@@ -10,6 +10,7 @@ import { fetchAdsCommand } from "../src/commands/test/fetchAds";
 import { CHAIN_ID, TELEGRAM_BOT_TOKEN } from "../src/env";
 import { messageFallbackHandler } from "../src/handlers/messageFallback";
 import { initMenus } from "../src/menus/init/initMenus";
+import express from "express";
 
 if (!TELEGRAM_BOT_TOKEN) {
   throw new Error("TELEGRAM_BOT_TOKEN is not defined");
@@ -34,16 +35,9 @@ displayAdCommand(bot); // test
 messageFallbackHandler(bot);
 
 console.log(`Starting the bot with chain id ${CHAIN_ID}...`);
-bot.start();
 
-bot.catch((err) => {
-  console.error(err);
+// express server
+const app = express();
+app.use(express.json());
 
-  // wait for 5 seconds before restarting the bot
-  setTimeout(() => {
-    console.log(`Restarting the bot with chain id ${CHAIN_ID}...`);
-    bot.start();
-  }, 5000);
-});
-
-export default webhookCallback(bot, "std/http");
+app.use(webhookCallback(bot, "express"));
