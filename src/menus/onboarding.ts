@@ -5,9 +5,8 @@ import { BASE_URL, CHAIN_ID } from "../env";
 export const onboardingMenu = new Menu("onboarding-menu")
   .text("Start to display ads", async (ctx) => {
     await ctx.reply(
-      "To start displaying ads, you need to enter the following commands:"
+      "To start displaying ads, you need to enter the following commands: /setup [offerId] [frequency]"
     );
-    await ctx.reply("/setup [offerId] [frequency]");
     await ctx.reply(
       "Example: /setup 1 5 (This will display ads from offer id 1 every 5 minutes)"
     );
