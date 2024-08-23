@@ -5,7 +5,7 @@ import { helpCommand } from "../src/commands/help";
 import { manageCommand } from "../src/commands/manage";
 import { setupCommand } from "../src/commands/setup";
 import { startCommand } from "../src/commands/start";
-import { suggestCommands } from "../src/commands/suggest";
+import { suggestCommands } from "../src/commands/suggest/commands";
 import { displayAdCommand } from "../src/commands/test/displayAd";
 import { fetchAdsCommand } from "../src/commands/test/fetchAds";
 import { CHAIN_ID } from "../src/env";
