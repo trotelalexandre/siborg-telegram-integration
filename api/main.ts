@@ -11,7 +11,7 @@ import { fetchAdsCommand } from "../src/commands/test/fetchAds";
 import { CHAIN_ID } from "../src/env";
 import { messageFallbackHandler } from "../src/handlers/messageFallback";
 
-export default webhookCallback(bot, "std/http");
+//export default webhookCallback(bot, "std/http");
 
 // commands
 suggestCommands();
