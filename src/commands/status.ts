@@ -1,12 +1,12 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
 import {
   ALL_ENV,
-  APP_URL,
   BASE_URL,
   CHAIN_ID,
   TEST_MODE_ENABLED,
   WEBHOOK_URL,
 } from "../env";
+import { escapeMarkdownV2 } from "../utils/escapeMarkdownV2";
 
 export const statusCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("status", async (ctx) => {

@@ -1,4 +1,4 @@
-const escapeMarkdownV2 = (text: string) => {
+export const escapeMarkdownV2 = (text: string) => {
   return text
     .replace(/\\/g, "\\\\") // Escape backslashes
     .replace(/_/g, "\\_") // Escape underscores
