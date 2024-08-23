@@ -5,7 +5,7 @@
   "main": "api/main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node build/main",
+    "start": "node build/api/main",
     "dev": "ts-node-dev api/main",
     "build": "tsc"
   },
