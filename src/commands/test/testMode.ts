@@ -15,6 +15,5 @@ export const testModeCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `Test mode is not enabled. TEST_ENV is set to ${TEST_ENV}`
       );
     });
-    return;
   }
 };
