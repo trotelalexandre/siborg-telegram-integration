@@ -18,7 +18,7 @@ export const statusCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `*APP\\_URL*: ${APP_URL?.replace(/[-.]/g, "\\$&")}\n\n` +
         `*WEBHOOK\\_URL*: ${WEBHOOK_URL?.replace(/[-.]/g, "\\$&")}\n\n` +
         `*Environment Variables*: ${ALL_ENV ? "All set" : "Missing"}\n\n` +
-        `*Environment*: ${process.env.NODE_ENV ? process.env.NODE_ENV?.replace(/[-.]/g, "\\$&") : "undefined"}\n\n` +
+        `*Environment*: ${process.env.NODE_ENV ? process.env.NODE_ENV?.replace(/[-.]/g, "\\$&")?.toUpperCase() : "undefined"}\n\n` +
         `*Note*: This bot is still in development\\. We appreciate your feedback and suggestions\\.`,
 
       {
