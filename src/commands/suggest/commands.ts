@@ -22,5 +22,15 @@ export const suggestCommands = (bot: Bot<Context, Api<RawApi>>) => {
       description:
         "Manage your offers and tokens here. Example: /manage [address]",
     },
+    {
+      command: "changeFrequency",
+      description:
+        "Change the frequency of the ad display. Example: /changeFrequency [frequency]",
+    },
+    {
+      command: "changeOffer",
+      description:
+        "Change the offer id to display. Example: /changeOffer [offerId]",
+    },
   ]);
 };

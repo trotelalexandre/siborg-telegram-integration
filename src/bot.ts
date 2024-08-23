@@ -11,6 +11,8 @@ import { TELEGRAM_BOT_TOKEN } from "../src/env";
 import { initMenus } from "../src/menus/init/initMenus";
 import { testModeCommand } from "./commands/test/testMode";
 import { statusCommand } from "./commands/status";
+import { changeFrequencyCommand } from "./commands/changeFrequency";
+import { changeOfferCommand } from "./commands/changeOffer";
 
 if (!TELEGRAM_BOT_TOKEN) {
   throw new Error("TELEGRAM_BOT_TOKEN is not defined");
@@ -26,6 +28,8 @@ suggestCommands(bot);
 startCommand(bot);
 helpCommand(bot);
 setupCommand(bot);
+changeFrequencyCommand(bot);
+changeOfferCommand(bot);
 manageCommand(bot);
 businessCommand(bot);
 statusCommand(bot);
