@@ -1,5 +1,5 @@
 {
   "outputDirectory": ".",
-  "installCommand": "pnpm i --omit=dev",
+  "installCommand": "pnpm i",
   "buildCommand": "pnpm ts-node scripts/build.ts"
 }
