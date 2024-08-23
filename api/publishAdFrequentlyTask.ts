@@ -33,6 +33,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         continue;
       }
 
+      console.log(`Config for chat id: ${chatId}`, config);
+
       const ad = await fetchAd(config.offerId);
 
       if (!ad) {
