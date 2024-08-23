@@ -6,7 +6,7 @@ import { kv } from "@vercel/kv";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const chatIds = await kv.get<number[]>("chatIds");
+    const chatIds = await kv.get<number[]>(chatIdsKey);
 
     if (!chatIds || chatIds.length === 0) {
       res.status(404).json({ message: "No chat ids found." });
@@ -14,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     for (const chatId of chatIds) {
-      const config = (await kv.get(chatIdsKey)) as {
+      const config = (await kv.get(chatId?.toString())) as {
         frequency: number;
         offerId: number;
         lastPublish: number;
