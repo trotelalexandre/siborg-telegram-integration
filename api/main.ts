@@ -1,3 +1,4 @@
+import { webhookCallback } from "grammy";
 import { bot } from "../src/bot";
 import { businessCommand } from "../src/commands/business";
 import { helpCommand } from "../src/commands/help";
@@ -9,6 +10,8 @@ import { displayAdCommand } from "../src/commands/test/displayAd";
 import { fetchAdsCommand } from "../src/commands/test/fetchAds";
 import { CHAIN_ID } from "../src/env";
 import { messageFallbackHandler } from "../src/handlers/messageFallback";
+
+export default webhookCallback(bot, "std/http");
 
 // commands
 suggestCommands();
