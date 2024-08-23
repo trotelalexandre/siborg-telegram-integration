@@ -1,26 +1,25 @@
-import { BASE_URL, CHAIN_ID, TEST_MODE_ENABLED } from "../src/env";
+import { BASE_URL, CHAIN_ID, CONFIG_KEY, TEST_MODE_ENABLED } from "../src/env";
 import { bot } from "../src/bot";
 import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import fs from "fs";
-import path from "path";
-
-const CONFIG_FILE_PATH = path.resolve(__dirname, "../configurations.json");
+import { kv } from "@vercel/kv";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   let configurations: {
     [key: string]: { frequency: number; offerId: number; lastPublish: number };
   } = {};
 
-  if (fs.existsSync(CONFIG_FILE_PATH)) {
-    try {
-      const data = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
+  try {
+    const data = await kv.get(CONFIG_KEY);
+    if (typeof data === "string") {
       configurations = JSON.parse(data);
-    } catch (error) {
-      console.error("Error reading configurations:", error);
-      res.status(500).json({ message: "Error reading configurations." });
-      return;
+    } else {
+      configurations = {};
     }
+  } catch (error) {
+    console.error("Error reading configurations:", error);
+    res.status(500).json({ message: "Error reading configurations." });
+    return;
   }
 
   const { offerIdData, telegramChatIdData } = req.query;
@@ -72,8 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log(`Ad fetched and displayed on the channel.`);
 
     configurations[telegramChatId].lastPublish = now;
-
-    fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configurations, null, 2));
+    await kv.set(CONFIG_KEY, JSON.stringify(configurations));
 
     res.status(200).json({ message: "Ad fetched and displayed." });
   } catch (error) {

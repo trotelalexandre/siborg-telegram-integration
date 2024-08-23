@@ -1,9 +1,6 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
-import { APP_URL, TEST_MODE_ENABLED } from "../env";
-import path from "path";
-import fs from "fs";
-
-const CONFIG_FILE_PATH = path.resolve(__dirname, "../configurations.json");
+import { APP_URL, CONFIG_KEY, TEST_MODE_ENABLED } from "../env";
+import { kv } from "@vercel/kv";
 
 export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("setup", async (ctx) => {
@@ -86,14 +83,17 @@ async function saveConfiguration(
         lastPublish: number;
       };
     } = {};
-    if (fs.existsSync(CONFIG_FILE_PATH)) {
-      const data = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
+
+    const data = await kv.get(CONFIG_KEY);
+    if (typeof data === "string") {
       configurations = JSON.parse(data);
+    } else {
+      configurations = {};
     }
 
     configurations[chatId] = { frequency, offerId, lastPublish: Date.now() };
 
-    fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configurations, null, 2));
+    await kv.set(CONFIG_KEY, JSON.stringify(configurations));
   } catch (error) {
     console.error("Error saving configuration:", error);
   }
