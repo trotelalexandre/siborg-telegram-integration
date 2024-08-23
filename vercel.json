@@ -1,8 +1,5 @@
 {
-  "functions": {
-    "api/main.ts": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
+  "outputDirectory": ".",
+  "installCommand": "pnpm i --omit=dev",
+  "buildCommand": "pnpm ts-node scripts/build.ts"
 }
