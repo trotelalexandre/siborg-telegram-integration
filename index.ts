@@ -2,12 +2,11 @@ import { Bot, InlineKeyboard } from "grammy";
 import { Menu } from "@grammyjs/menu";
 import dotenv from "dotenv";
 import { isAddress } from "viem";
-import { fetchAds, fetchTokenIdsFromOfferId } from "./relayer";
+import { fetchAd, fetchTokenIdsFromOfferId } from "./relayer";
 import cron from "node-cron";
 
 // types
 import type { Address } from "viem";
-import type { DisplayType } from "./types";
 
 // load environment variables
 dotenv.config();
@@ -23,8 +22,6 @@ const testEnv: boolean = process.env.TEST_ENV === "true";
 // global variables
 let profileAddress: Address | undefined = undefined;
 let awaitingAddress: boolean = false;
-
-let displayType: DisplayType | undefined = undefined;
 
 // suggest commands
 bot.api.setMyCommands([
@@ -44,49 +41,33 @@ bot.api.setMyCommands([
   },
 ]);
 
-// display type menu
-const displayTypeMenu = new Menu("display-type-menu")
-  .text("Clickable Logo Grid", (ctx) => {
-    displayType = "ClickableLogoGrid";
-    ctx.reply("Display type has been set to Clickable Logo Grid.");
-  })
-  .row()
-  .text("Dynamic Banner", (ctx) => {
-    displayType = "DynamicBanner";
-    ctx.reply("Display type has been set to Dynamic Banner.");
-  });
-
 // config menu
-const configMenu = new Menu("config-menu")
-  .text("Add my address", (ctx) => {
+const configMenu = new Menu("config-menu").text(
+  "Add my address",
+  async (ctx) => {
     awaitingAddress = true;
-    ctx.reply(
+    await ctx.reply(
       "To configure the bot, you need to specify your address. Please provide your address."
     );
-  })
-  .row()
-  .text("Change display type", (ctx) => {
-    ctx.reply("You can change the display type here.", {
-      reply_markup: displayTypeMenu,
-    });
-  });
+  }
+);
 
 // onboarding menu
 const onboardingMenu = new Menu("onboarding-menu")
-  .text("Configure the bot", (ctx) => {
-    ctx.reply("You can configure the bot here.", {
+  .text("Configure the bot", async (ctx) => {
+    await ctx.reply("You can configure the bot here.", {
       reply_markup: configMenu,
     });
   })
   .row()
-  .text("Manage your offer and your tokens", (ctx) => {
+  .text("Manage your offer and your tokens", async (ctx) => {
     if (!profileAddress) {
       const noAddressKeyboard = new InlineKeyboard().url(
         "Create a new offer",
         `${baseURL}/${chainId}/offer/create`
       );
 
-      ctx.reply("You can manage your offers and tokens here", {
+      await ctx.reply("You can manage your offers and tokens here", {
         reply_markup: noAddressKeyboard,
       });
     } else {
@@ -103,27 +84,29 @@ const onboardingMenu = new Menu("onboarding-menu")
         )
         .url("View statistics", `${baseURL}/profile/${profileAddress}`);
 
-      ctx.reply("You can manage your offers and tokens here.", {
+      await ctx.reply("You can manage your offers and tokens here.", {
         reply_markup: addressKeyboard,
       });
     }
   });
 
 // exit address configuration
-const exitAddressMenu = new Menu("exit-address-menu").text("Exit", (ctx) => {
-  awaitingAddress = false;
-  ctx.reply("You have exited the address configuration.");
-});
+const exitAddressMenu = new Menu("exit-address-menu").text(
+  "Exit",
+  async (ctx) => {
+    awaitingAddress = false;
+    await ctx.reply("You have exited the address configuration.");
+  }
+);
 
 // interactive menu
-bot.use(displayTypeMenu);
 bot.use(configMenu);
 bot.use(onboardingMenu);
 bot.use(exitAddressMenu);
 
 // start command explain briefly what is the bot about
-bot.command("start", (ctx) => {
-  ctx.reply(
+bot.command("start", async (ctx) => {
+  await ctx.reply(
     "Welcome ! SiBorg Ads is the way to monetize your Telegram channels by allowing you to display ads. To get started, you can configure the bot to specify your address.",
     {
       reply_markup: onboardingMenu,
@@ -131,20 +114,20 @@ bot.command("start", (ctx) => {
   );
 });
 
-bot.command("help", (ctx) => {
-  ctx.reply("");
+bot.command("help", async (ctx) => {
+  await ctx.reply("");
 });
 
-bot.command("config", (ctx) => {
-  ctx.reply("You can configure the bot here.", {
+bot.command("config", async (ctx) => {
+  await ctx.reply("You can configure the bot here.", {
     reply_markup: configMenu,
   });
 });
 
-bot.command("setup", (ctx) => {
+bot.command("setup", async (ctx) => {
   if (!ctx.match) {
-    ctx.reply(
-      "Please provide the offer ID, display type, and frequency in minutes. Example: /setup 1 5"
+    await ctx.reply(
+      "Please provide the offer ID, display type, and frequency in minutes. Example: /setup [offerId] [frequency]"
     );
     return;
   }
@@ -152,17 +135,28 @@ bot.command("setup", (ctx) => {
   const args: string[] = ctx.match.split(" ");
 
   const offerId: number = parseInt(args[0]);
-  const type: DisplayType = displayType ?? "DynamicBanner";
   const frequency: number = parseInt(args[1]);
 
   // make a cron job to fetch the ads every frequency minutes and display them on the channel
   cron.schedule(`*/${frequency} * * * *`, async () => {
-    const ads = await fetchAds(offerId, type);
+    const ad = await fetchAd(offerId).catch(async (error) => {
+      await ctx.reply("Error fetching ad.");
+    });
 
-    // TODO : display ads on the channel
+    if (!ad) {
+      await ctx.reply("No ads found for this offer.");
+      return;
+    }
+
+    await ctx.replyWithPhoto(ad.image, {
+      caption: `Check out this ad! ${ad.link}`,
+    });
+    await ctx.reply(`Do you want to add your ad too? Check out ${baseURL}`);
+
+    console.log(`Ad fetched and displayed on the channel.`);
   });
 
-  ctx.reply(
+  await ctx.reply(
     `Ad setup complete. Ads will be fetched every ${frequency} minutes.`
   );
 });
@@ -176,49 +170,74 @@ if (testEnv) {
     }
 
     const offerId: number = parseInt(ctx.match);
-    const type: DisplayType = displayType ?? "DynamicBanner";
 
-    console.log(`Fetching ads for offer ${offerId} with type ${type}...`);
-    const ads = await fetchTokenIdsFromOfferId(offerId);
-    console.log(ads);
+    console.log(`Fetching ads for offer ${offerId}...`);
+    const ads = await fetchTokenIdsFromOfferId(offerId).catch(async (error) => {
+      await ctx.reply("Error fetching ads.");
+    });
 
     await ctx.reply("Ads have been fetched.");
 
     if (ads) {
       ads?.forEach(async (tokenId: bigint, index: number) => {
-        await ctx.reply(
-          `Token ID n°${index} : ${baseURL}/${chainId}/offer/${offerId}/${tokenId}`
-        );
+        await ctx.reply(`${baseURL}/${chainId}/offer/${offerId}/${tokenId}`);
       });
     }
+  });
+
+  bot.command("displayAd", async (ctx) => {
+    if (!ctx.match) {
+      ctx.reply("Please provide the offer ID.");
+      return;
+    }
+
+    const offerId: number = parseInt(ctx.match);
+
+    console.log(`Fetching ad for offer ${offerId}...`);
+    const ad = await fetchAd(offerId).catch(async (error) => {
+      await ctx.reply("Error fetching ad.");
+    });
+
+    if (!ad) {
+      await ctx.reply("No ads found for this offer.");
+      return;
+    }
+
+    await ctx.replyWithPhoto(ad.image, {
+      caption: `Check out this ad! ${ad.link}`,
+    });
+
+    await ctx.reply(`Do you want to add your ad too? Check out ${baseURL}`);
+
+    console.log(`Ad fetched and displayed on the channel.`);
   });
 }
 
 // address configuration
-bot.on("message:text", (ctx) => {
+bot.on("message:text", async (ctx) => {
   if (awaitingAddress) {
     if (!ctx.message.text) {
-      ctx.reply("Please provide an address.", {
+      await ctx.reply("Please provide an address.", {
         reply_markup: exitAddressMenu,
       });
       return;
     }
 
     if (!isAddress(ctx.message.text)) {
-      ctx.reply("The address you provided is invalid. Try again.", {
+      await ctx.reply("The address you provided is invalid. Try again.", {
         reply_markup: exitAddressMenu,
       });
       return;
     }
 
     profileAddress = ctx.message.text;
-    ctx.reply(`Your address ${profileAddress} has been saved!`);
+    await ctx.reply(`Your address ${profileAddress} has been saved!`);
   }
 });
 
 // message fallback
-bot.on("message", (ctx) => {
-  ctx.reply(
+bot.on("message", async (ctx) => {
+  await ctx.reply(
     "To get started, you can simply type /start. If you need any help, you can use /help."
   );
 });
