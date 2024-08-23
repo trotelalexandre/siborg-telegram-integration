@@ -1,5 +1,9 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
 import { APP_URL, TEST_MODE_ENABLED } from "../env";
+import path from "path";
+import fs from "fs";
+
+const CONFIG_FILE_PATH = path.resolve(__dirname, "../configurations.json");
 
 export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
   bot.command("setup", async (ctx) => {
@@ -29,6 +33,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
       const frequency: number = 1;
 
+      await saveConfiguration(chatId, frequency, offerId);
       await callPublishAdEndpoint(frequency, offerId, chatId, ctx);
     } else {
       if (!ctx.match) {
@@ -38,7 +43,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
         return;
       }
 
-      const args: string[] = ctx.match.split(" ");
+      const args: string[] = ctx.match.split(" ").slice(1);
 
       if (args.length < 2) {
         await ctx.reply(
@@ -48,7 +53,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
       }
 
       const offerId: number = parseInt(args[0]);
-      const frequency: number = parseInt(args[1]);
+      const frequency: number = parseInt(args[1], 10);
 
       if (isNaN(offerId) || isNaN(frequency)) {
         await ctx.reply(
@@ -62,10 +67,33 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
         return;
       }
 
+      await saveConfiguration(chatId, frequency, offerId);
       await callPublishAdEndpoint(frequency, offerId, chatId, ctx);
     }
   });
 };
+
+async function saveConfiguration(
+  chatId: number,
+  frequency: number,
+  offerId: number
+) {
+  try {
+    let configurations: {
+      [key: string]: { frequency: number; offerId: number };
+    } = {};
+    if (fs.existsSync(CONFIG_FILE_PATH)) {
+      const data = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
+      configurations = JSON.parse(data);
+    }
+
+    configurations[chatId] = { frequency, offerId };
+
+    fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configurations, null, 2));
+  } catch (error) {
+    console.error("Error saving configuration:", error);
+  }
+}
 
 async function callPublishAdEndpoint(
   frequency: number,
