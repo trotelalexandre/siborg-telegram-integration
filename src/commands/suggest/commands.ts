@@ -31,6 +31,11 @@ export const suggestCommands = async (bot: Bot<Context, Api<RawApi>>) => {
         description:
           "Change the frequency or offer id of the ad display. Example: /change [frequency|offerId] [value]",
       },
+      {
+        command: "clean",
+        description:
+          "Clean the chat by deleting the message from SiBorg Ads bot.",
+      },
     ])
     .catch((error) => {
       console.error("Error setting commands suggestions:", error);

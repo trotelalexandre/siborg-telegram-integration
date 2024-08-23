@@ -12,6 +12,7 @@ import { initMenus } from "../src/menus/init/initMenus";
 import { testModeCommand } from "./commands/test/testMode";
 import { statusCommand } from "./commands/status";
 import { changeCommand } from "./commands/change";
+import { cleanCommand } from "./commands/clean";
 
 if (!TELEGRAM_BOT_TOKEN) {
   throw new Error("TELEGRAM_BOT_TOKEN is not defined");
@@ -27,6 +28,7 @@ try {
   suggestCommands(bot);
   startCommand(bot);
   helpCommand(bot);
+  cleanCommand(bot);
   setupCommand(bot);
   changeCommand(bot);
   manageCommand(bot);
