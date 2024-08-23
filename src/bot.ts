@@ -8,7 +8,6 @@ import { suggestCommands } from "../src/commands/suggest/commands";
 import { displayAdCommand } from "../src/commands/test/displayAd";
 import { fetchAdsCommand } from "../src/commands/test/fetchAds";
 import { TELEGRAM_BOT_TOKEN } from "../src/env";
-import { messageFallbackHandler } from "../src/handlers/messageFallback";
 import { initMenus } from "../src/menus/init/initMenus";
 
 if (!TELEGRAM_BOT_TOKEN) {
@@ -29,6 +28,3 @@ manageCommand(bot);
 businessCommand(bot);
 fetchAdsCommand(bot); // test
 displayAdCommand(bot); // test
-
-// handlers
-messageFallbackHandler(bot);
