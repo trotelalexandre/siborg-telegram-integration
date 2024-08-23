@@ -15,8 +15,8 @@ export const statusCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `*Current Chain ID*: ${CHAIN_ID?.toString()?.replace(/[-.]/g, "\\$&")}\n\n` +
         `*Current Chat ID*: ${ctx.chat?.id?.toString()?.replace(/[-.]/g, "\\$&")}\n\n` +
         `*Test Mode*: ${TEST_MODE_ENABLED ? "Enabled" : "Disabled"}\n\n` +
-        `*APP_URL*: ${APP_URL?.replace(/[-.]/g, "\\$&")}\n\n` +
-        `*WEBHOOK_URL*: ${WEBHOOK_URL?.replace(/[-.]/g, "\\$&")}\n\n` +
+        `*APP\\_URL*: ${APP_URL?.replace(/[-.]/g, "\\$&")}\n\n` +
+        `*WEBHOOK\\_URL*: ${WEBHOOK_URL?.replace(/[-.]/g, "\\$&")}\n\n` +
         `*Environment Variables*: ${ALL_ENV ? "All set" : "Missing"}\n\n` +
         `*Environment*: ${process.env.NODE_ENV ? process.env.NODE_ENV?.replace(/[-.]/g, "\\$&") : "undefined"}\n\n` +
         `*Note*: This bot is still in development\\. We appreciate your feedback and suggestions\\.`,
