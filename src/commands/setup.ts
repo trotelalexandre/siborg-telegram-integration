@@ -1,5 +1,5 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
-import { APP_URL, CONFIG_KEY, TEST_MODE_ENABLED } from "../env";
+import { chatIdsKey, TEST_MODE_ENABLED } from "../env";
 import { kv } from "@vercel/kv";
 
 export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
@@ -31,7 +31,6 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
       const frequency: number = 1;
 
       await saveConfiguration(chatId, frequency, offerId);
-      await callPublishAdEndpoint(frequency, offerId, chatId, ctx);
     } else {
       if (!ctx.match) {
         await ctx.reply(
@@ -65,7 +64,6 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
       }
 
       await saveConfiguration(chatId, frequency, offerId);
-      await callPublishAdEndpoint(frequency, offerId, chatId, ctx);
     }
   });
 };
@@ -76,50 +74,21 @@ async function saveConfiguration(
   offerId: number
 ) {
   try {
-    let configurations: {
-      [key: string]: {
-        frequency: number;
-        offerId: number;
-        lastPublish: number;
-      };
-    } = {};
+    const configuration = { frequency, offerId, lastPublish: Date.now() };
 
-    const data = await kv.get(CONFIG_KEY);
-    if (typeof data === "string") {
-      configurations = JSON.parse(data);
-    } else {
-      configurations = {};
+    await kv.set(chatId?.toString(), configuration);
+
+    let chatIds = await kv.get<number[]>(chatIdsKey);
+
+    if (!chatIds) {
+      chatIds = [];
     }
 
-    configurations[chatId] = { frequency, offerId, lastPublish: Date.now() };
-
-    await kv.set(CONFIG_KEY, JSON.stringify(configurations));
+    if (!chatIds.includes(chatId)) {
+      chatIds.push(chatId);
+      await kv.set(chatIdsKey, chatIds);
+    }
   } catch (error) {
     console.error("Error saving configuration:", error);
-  }
-}
-
-async function callPublishAdEndpoint(
-  frequency: number,
-  offerId: number,
-  chatId: number,
-  ctx: Context
-) {
-  try {
-    const response = await fetch(
-      `${APP_URL}/api/publishAd?offerIdData=${offerId}&telegramChatIdData=${chatId}`
-    );
-    const result = await response.json();
-
-    if (response.ok) {
-      await ctx.reply(
-        `Ad setup complete. Ads will be fetched every ${frequency} minutes.`
-      );
-    } else {
-      await ctx.reply(`Failed to set up ad: ${result.message}`);
-    }
-  } catch (error) {
-    console.error("Error calling publishAd endpoint:", error);
-    await ctx.reply("An error occurred while setting up the ad.");
   }
 }

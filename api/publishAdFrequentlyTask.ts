@@ -1,77 +1,64 @@
-import { BASE_URL, CHAIN_ID, CONFIG_KEY, TEST_MODE_ENABLED } from "../src/env";
+import { BASE_URL, CHAIN_ID, chatIdsKey, TEST_MODE_ENABLED } from "../src/env";
 import { bot } from "../src/bot";
 import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { kv } from "@vercel/kv";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  let configurations: {
-    [key: string]: { frequency: number; offerId: number; lastPublish: number };
-  } = {};
-
-  try {
-    const data = await kv.get(CONFIG_KEY);
-    if (typeof data === "string") {
-      configurations = JSON.parse(data);
-    } else {
-      configurations = {};
-    }
-  } catch (error) {
-    console.error("Error reading configurations:", error);
-    res.status(500).json({ message: "Error reading configurations." });
-    return;
-  }
-
-  const { offerIdData, telegramChatIdData } = req.query;
-  const offerId = parseInt(offerIdData as string);
-  const telegramChatId = parseInt(telegramChatIdData as string);
-
   if (!TEST_MODE_ENABLED) {
     res.status(403).json({ message: "Cron job is not enabled." });
     return;
   }
 
-  if (isNaN(offerId) || isNaN(telegramChatId)) {
-    res.status(400).json({ message: "Invalid parameters." });
-    return;
-  }
-
-  const config = configurations[telegramChatId];
-
-  if (!config || config.offerId !== offerId) {
-    res.status(404).json({ message: "Configuration not found for this chat." });
-    return;
-  }
-
-  const now = Date.now();
-  const timeSinceLastPublish = now - config.lastPublish;
-
-  if (timeSinceLastPublish < config.frequency * 60 * 1000) {
-    res.status(200).json({ message: "Not yet time to publish the ad." });
-    return;
-  }
-
   try {
-    const ad = await fetchAd(offerId);
+    const chatIds = await kv.get<number[]>("chatIds");
 
-    if (!ad) {
-      res.status(404).json({ message: "No ads found for this offer." });
+    if (!chatIds || chatIds.length === 0) {
+      res.status(404).json({ message: "No chat ids found." });
       return;
     }
 
-    await bot.api.sendPhoto(telegramChatId, ad.image, {
-      caption: `Check out this ad! ${ad.link}`,
-    });
+    for (const chatId of chatIds) {
+      const config = (await kv.get(chatIdsKey)) as {
+        frequency: number;
+        offerId: number;
+        lastPublish: number;
+      };
 
-    await bot.api.sendMessage(
-      telegramChatId,
-      `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${offerId}`
-    );
+      if (!config) {
+        console.warn(`Configuration not found for chat id: ${chatId}`);
+        continue;
+      }
 
-    console.log(`Ad fetched and displayed on the channel.`);
+      const now = Date.now();
+      const timeSinceLastPublish = now - config.lastPublish;
 
-    configurations[telegramChatId].lastPublish = now;
-    await kv.set(CONFIG_KEY, JSON.stringify(configurations));
+      if (timeSinceLastPublish < config.frequency * 60 * 1000) {
+        console.log(`Not yet time to publish the ad for chat id: ${chatId}`);
+        continue;
+      }
+
+      const ad = await fetchAd(config.offerId);
+
+      if (!ad) {
+        console.warn(`No ads found for offer id: ${config.offerId}`);
+        continue;
+      }
+
+      await bot.api.sendPhoto(chatId, ad.image, {
+        caption: `Check out this ad! ${ad.link}`,
+      });
+
+      await bot.api.sendMessage(
+        chatId,
+        `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${config.offerId}`
+      );
+
+      console.log(`Ad fetched and displayed on chat id: ${chatId}`);
+
+      config.lastPublish = now;
+      await kv.set(chatIdsKey, config);
+    }
 
     res.status(200).json({ message: "Ad fetched and displayed." });
   } catch (error) {

@@ -9,8 +9,8 @@ export const TEST_ENV = process.env.TEST_ENV === "true";
 export const FORMS_URL = "https://forms.dsponsor.com";
 export const WEBHOOK_URL = process.env.WEBHOOK_URL!;
 export const TEST_MODE_ENABLED = process.env.TEST_ENV === "true";
-export const APP_URL = process.env.APP_URL!;
-export const CONFIG_KEY = "telegram-chats-config";
+
+export const chatIdsKey = "chatIds";
 
 function checkIfMissingEnv(envs: string[]) {
   for (const env of envs) {
@@ -28,7 +28,6 @@ const requiredEnv = [
   "TEST_ENV",
   "BASE_URL",
   "WEBHOOK_URL",
-  "APP_URL",
 ];
 
 export const ALL_ENV = checkIfMissingEnv(requiredEnv);
