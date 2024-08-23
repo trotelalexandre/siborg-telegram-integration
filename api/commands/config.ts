@@ -1,4 +1,4 @@
-import { bot } from "../bot";
+import { bot } from "../../src/bot";
 import { configMenu } from "../menus/config";
 
 export const configCommand = () => {
