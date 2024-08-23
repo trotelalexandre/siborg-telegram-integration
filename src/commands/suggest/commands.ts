@@ -4,9 +4,9 @@ export const suggestCommands = (bot: Bot<Context, Api<RawApi>>) => {
   bot.api.setMyCommands([
     {
       command: "start",
-      description: "Get started to manage your offers, tokens, and ads",
+      description: "Get started to manage your offers, tokens, and ads.",
     },
-    { command: "help", description: "Get help and learn how to use the bot" },
+    { command: "help", description: "Get help and learn how to use the bot." },
     {
       command: "setup",
       description:
@@ -17,6 +17,10 @@ export const suggestCommands = (bot: Bot<Context, Api<RawApi>>) => {
       description:
         "Are you looking for sponsors or visibility? Get started here.",
     },
-    { command: "manage", description: "Manage your offers and tokens here" },
+    {
+      command: "manage",
+      description:
+        "Manage your offers and tokens here. Example: /manage [address]",
+    },
   ]);
 };
