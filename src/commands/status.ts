@@ -17,7 +17,7 @@ export const statusCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `*Test Mode*: ${TEST_MODE_ENABLED ? "ENABLED" : "DISABLED"}\n\n` +
         `*WEBHOOK\\_URL*: ${escapeMarkdownV2(WEBHOOK_URL)}\n\n` +
         `*Environment Variables*: ${ALL_ENV ? "All set" : "Missing"}\n\n` +
-        `*Environment*: ${escapeMarkdownV2(process.env.NODE_ENV ?? "undefined")?.toLowerCase()}\n\n` +
+        `*Environment*: ${escapeMarkdownV2(process.env.NODE_ENV ?? "undefined")?.toUpperCase()}\n\n` +
         `*Note*: This bot is still in development\\. We appreciate your feedback and suggestions\\.`,
 
       {
