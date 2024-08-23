@@ -1,7 +1,7 @@
 import { InlineKeyboard } from "grammy";
 import { BASE_URL, CHAIN_ID } from "../env";
 import { isAddress } from "viem";
-import { bot } from "../bot";
+import { bot } from "../../api/main";
 
 export const manageCommand = () => {
   bot.command("manage", async (ctx) => {

@@ -1,4 +1,4 @@
-import { bot } from "../bot";
+import { bot } from "../../api/main";
 
 export const messageFallbackHandler = () => {
   bot.on("message", async (ctx) => {

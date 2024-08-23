@@ -1,4 +1,4 @@
-import { bot } from "../bot";
+import { bot } from "../../api/main";
 import { onboardingMenu } from "../menus/onboarding";
 
 export const startCommand = () => {

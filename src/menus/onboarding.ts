@@ -1,7 +1,7 @@
 import { Menu } from "@grammyjs/menu";
-import { bot } from "../bot";
 import { InlineKeyboard } from "grammy";
 import { BASE_URL, CHAIN_ID } from "../env";
+import { bot } from "../../api/main";
 
 export const onboardingMenu = new Menu("onboarding-menu")
   .text("Start to display ads", async (ctx) => {

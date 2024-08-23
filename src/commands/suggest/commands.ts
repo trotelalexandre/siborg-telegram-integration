@@ -1,4 +1,4 @@
-import { bot } from "../../bot";
+import { bot } from "../../../api/main";
 
 export const suggestCommands = () => {
   bot.api.setMyCommands([

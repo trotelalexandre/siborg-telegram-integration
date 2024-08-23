@@ -1,4 +1,4 @@
-import { bot } from "../../bot";
+import { bot } from "../../../api/main";
 import { BASE_URL, CHAIN_ID, TEST_ENV } from "../../env";
 import fetchTokenIdsFromOfferId from "../../utils/fetchTokenIdsFromOfferId";
 

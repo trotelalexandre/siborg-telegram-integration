@@ -1,4 +1,4 @@
-import { bot } from "../bot";
+import { bot } from "../../api/main";
 import { BASE_URL } from "../env";
 
 export const helpCommand = () => {

@@ -1,6 +1,6 @@
 import { Menu } from "@grammyjs/menu";
-import { bot } from "../bot";
 import { FORMS_URL } from "../env";
+import { bot } from "../../api/main";
 
 export const businessMenu = new Menu("business-menu")
   .url("I'm looking for sponsors", `${FORMS_URL}/looking-for-sponsors`)

@@ -1,4 +1,4 @@
-import { bot } from "../bot";
+import { bot } from "../../api/main";
 import { publishAdFrequentlyCommand } from "../cron-tasks/publishAdFrequently";
 
 export const setupCommand = () => {
