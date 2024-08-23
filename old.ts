@@ -2,11 +2,12 @@ import { Bot, InlineKeyboard } from "grammy";
 import { Menu } from "@grammyjs/menu";
 import dotenv from "dotenv";
 import { isAddress } from "viem";
-import { fetchAd, fetchTokenIdsFromOfferId } from "./relayer";
 import cron from "node-cron";
 
 // types
 import type { Address } from "viem";
+import fetchAd from "./src/utils/fetchAd";
+import fetchTokenIdsFromOfferId from "./src/utils/fetchTokenIdsFromOfferId";
 
 // load environment variables
 dotenv.config();
@@ -18,6 +19,7 @@ const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN!);
 const chainId: number = parseInt(process.env.CHAIN_ID!);
 const baseURL: string = process.env.BASE_URL ?? "https://app.dsponsor.com";
 const testEnv: boolean = process.env.TEST_ENV === "true";
+const formsURL: string = "https://forms.dsponsor.com";
 
 // global variables
 let profileAddress: Address | undefined = undefined;
@@ -37,7 +39,13 @@ bot.api.setMyCommands([
   },
   {
     command: "setup",
-    description: "Setup the bot to display ads on your channel",
+    description:
+      "Setup the bot to display ads on your channel. Example: /setup [offerId] [frequency]",
+  },
+  {
+    command: "business",
+    description:
+      "Are you looking for sponsors or visibility? Get started here.",
   },
 ]);
 
@@ -51,6 +59,12 @@ const configMenu = new Menu("config-menu").text(
     );
   }
 );
+
+// business menu
+const businessMenu = new Menu("business-menu")
+  .url("I'm looking for sponsors", `${formsURL}/looking-for-sponsors`)
+  .row()
+  .url("I'm looking for visibility", `${formsURL}/looking-for-visibility`);
 
 // onboarding menu
 const onboardingMenu = new Menu("onboarding-menu")
@@ -103,6 +117,7 @@ const exitAddressMenu = new Menu("exit-address-menu").text(
 bot.use(configMenu);
 bot.use(onboardingMenu);
 bot.use(exitAddressMenu);
+bot.use(businessMenu);
 
 // start command explain briefly what is the bot about
 bot.command("start", async (ctx) => {
@@ -115,7 +130,29 @@ bot.command("start", async (ctx) => {
 });
 
 bot.command("help", async (ctx) => {
-  await ctx.reply("");
+  await ctx.reply(
+    `*Help Menu*\n\n` +
+      `Here is a list of commands you can use:\n\n` +
+      `*/start* \\- Get started to manage your offers, tokens, and ads\\.\n` +
+      `*/help* \\- Get help and learn how to use the bot\\.\n` +
+      `*/config* \\- Configure the bot by setting your address, display type, etc\\.\n` +
+      `*/setup [offerId] [frequency]* \\- Setup the bot to display ads on your channel\\. Example: \`/setup 123 5\` will display ads from offer 123 every 5 minutes\\.\n` +
+      `*/business* \\- If you're looking for sponsors or visibility, get started here\\.\n\n` +
+      `*Additional Info:*\n\n` +
+      `\\- Use the /config command to add your address and configure your settings\\.\n` +
+      `\\- Use the /setup command to schedule ad displays on your channel\\. You need to specify the offer id and the frequency in minutes\\.\n` +
+      `\\- If you encounter any issues, try restarting the bot or contact support\\.\n\n` +
+      `For more details, visit our [website](${baseURL})\\.`,
+    {
+      parse_mode: "MarkdownV2",
+    }
+  );
+});
+
+bot.command("business", async (ctx) => {
+  await ctx.reply("Are you looking for sponsors or visibility?", {
+    reply_markup: businessMenu,
+  });
 });
 
 bot.command("config", async (ctx) => {
@@ -127,7 +164,7 @@ bot.command("config", async (ctx) => {
 bot.command("setup", async (ctx) => {
   if (!ctx.match) {
     await ctx.reply(
-      "Please provide the offer ID, display type, and frequency in minutes. Example: /setup [offerId] [frequency]"
+      "Please provide the offer id, display type, and frequency in minutes. Example: /setup [offerId] [frequency]"
     );
     return;
   }
@@ -136,6 +173,18 @@ bot.command("setup", async (ctx) => {
 
   const offerId: number = parseInt(args[0]);
   const frequency: number = parseInt(args[1]);
+
+  if (isNaN(offerId) || isNaN(frequency)) {
+    await ctx.reply(
+      "Please provide the offer id, display type, and frequency in minutes. Example: /setup [offerId] [frequency]"
+    );
+    return;
+  }
+
+  if (frequency < 4) {
+    await ctx.reply("Frequency must be at least 5 minutes.");
+    return;
+  }
 
   // make a cron job to fetch the ads every frequency minutes and display them on the channel
   cron.schedule(`*/${frequency} * * * *`, async () => {
@@ -151,7 +200,9 @@ bot.command("setup", async (ctx) => {
     await ctx.replyWithPhoto(ad.image, {
       caption: `Check out this ad! ${ad.link}`,
     });
-    await ctx.reply(`Do you want to add your ad too? Check out ${baseURL}`);
+    await ctx.reply(
+      `Do you want to display your ad too? Check out ${baseURL}/${chainId}/offer/${offerId}`
+    );
 
     console.log(`Ad fetched and displayed on the channel.`);
   });
@@ -165,7 +216,7 @@ bot.command("setup", async (ctx) => {
 if (testEnv) {
   bot.command("fetchAds", async (ctx) => {
     if (!ctx.match) {
-      ctx.reply("Please provide the offer ID.");
+      ctx.reply("Please provide the offer id.");
       return;
     }
 
@@ -187,7 +238,7 @@ if (testEnv) {
 
   bot.command("displayAd", async (ctx) => {
     if (!ctx.match) {
-      ctx.reply("Please provide the offer ID.");
+      ctx.reply("Please provide the offer id.");
       return;
     }
 
@@ -207,7 +258,9 @@ if (testEnv) {
       caption: `Check out this ad! ${ad.link}`,
     });
 
-    await ctx.reply(`Do you want to add your ad too? Check out ${baseURL}`);
+    await ctx.reply(
+      `Do you want to display your ad too? Check out ${baseURL}/${chainId}/offer/${offerId}`
+    );
 
     console.log(`Ad fetched and displayed on the channel.`);
   });
@@ -242,7 +295,7 @@ bot.on("message", async (ctx) => {
   );
 });
 
-console.log(`Starting the bot with chain ID ${chainId}...`);
+console.log(`Starting the bot with chain id ${chainId}...`);
 bot.start();
 
 bot.catch((err) => {
@@ -250,7 +303,7 @@ bot.catch((err) => {
 
   // wait for 5 seconds before restarting the bot
   setTimeout(() => {
-    console.log(`Restarting the bot with chain ID ${chainId}...`);
+    console.log(`Restarting the bot with chain id ${chainId}...`);
     bot.start();
   }, 5000);
 });
