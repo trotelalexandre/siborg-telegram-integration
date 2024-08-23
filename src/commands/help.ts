@@ -10,7 +10,7 @@ export const helpCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `*/help* \\- Get help and learn how to use the bot\\.\n` +
         `*/manage [address]* \\- Manage your offers and tokens here\\.\n` +
         `*/setup [offerId] [frequency]* \\- Setup the bot to display ads on your channel\\. Example: \`/setup 123 5\` will display ads from offer 123 every 5 minutes\\.\n` +
-        `*/change [frequency|offerId] [value]* \\- Change the frequency or offer id of the ad display\\. Example: \`/change frequency 10\` will change the frequency to 10 minutes\\.\n` +
+        `*/change [frequency\\|offerId] [value]* \\- Change the frequency or offer id of the ad display\\. Example: \`/change frequency 10\` will change the frequency to 10 minutes\\.\n` +
         `*/business* \\- If you're looking for sponsors or visibility, get started here\\.\n\n` +
         `*Additional Info:*\n\n` +
         `\\- Use the /config command to add your address and configure your settings\\.\n` +

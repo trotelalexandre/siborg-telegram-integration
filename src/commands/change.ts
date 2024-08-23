@@ -44,6 +44,7 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
       await ctx.reply(
         "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
       );
+      return;
     }
 
     await ctx.reply(`Configuration updated. ${key} set to ${value}.`);

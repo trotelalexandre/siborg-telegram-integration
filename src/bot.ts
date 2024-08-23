@@ -19,18 +19,22 @@ if (!TELEGRAM_BOT_TOKEN) {
 
 export const bot = new Bot(TELEGRAM_BOT_TOKEN);
 
-// init menus
-initMenus(bot);
+try {
+  // init menus
+  initMenus(bot);
 
-// commands
-suggestCommands(bot);
-startCommand(bot);
-helpCommand(bot);
-setupCommand(bot);
-changeCommand(bot);
-manageCommand(bot);
-businessCommand(bot);
-statusCommand(bot);
-testModeCommand(bot); // test
-fetchAdsCommand(bot); // test
-displayAdCommand(bot); // test
+  // commands
+  suggestCommands(bot);
+  startCommand(bot);
+  helpCommand(bot);
+  setupCommand(bot);
+  changeCommand(bot);
+  manageCommand(bot);
+  businessCommand(bot);
+  statusCommand(bot);
+  testModeCommand(bot); // test
+  fetchAdsCommand(bot); // test
+  displayAdCommand(bot); // test
+} catch (error) {
+  console.error("Error caught:", error);
+}
