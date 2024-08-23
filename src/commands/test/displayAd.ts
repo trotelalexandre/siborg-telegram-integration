@@ -27,7 +27,12 @@ export const displayAdCommand = (bot: Bot<Context, Api<RawApi>>) => {
       });
 
       await ctx.reply(
-        `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${offerId}`
+        `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${offerId}`,
+        {
+          link_preview_options: {
+            is_disabled: true,
+          },
+        }
       );
 
       console.log(`Ad fetched and displayed on the channel.`);

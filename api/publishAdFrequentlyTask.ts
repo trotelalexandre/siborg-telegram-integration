@@ -48,7 +48,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       await bot.api.sendMessage(
         chatId,
-        `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${config.offerId}`
+        `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${config.offerId}`,
+        {
+          link_preview_options: {
+            is_disabled: true,
+          },
+        }
       );
 
       console.log(`Ad fetched and displayed on chat id: ${chatId}`);
