@@ -8,7 +8,7 @@ export const helpCommand = () => {
         `Here is a list of commands you can use:\n\n` +
         `*/start* \\- Get started to manage your offers, tokens, and ads\\.\n` +
         `*/help* \\- Get help and learn how to use the bot\\.\n` +
-        `*/config* \\- Configure the bot by setting your address, display type, etc\\.\n` +
+        `*/manage [address]* \\- Manage your offers and tokens here\\.\n` +
         `*/setup [offerId] [frequency]* \\- Setup the bot to display ads on your channel\\. Example: \`/setup 123 5\` will display ads from offer 123 every 5 minutes\\.\n` +
         `*/business* \\- If you're looking for sponsors or visibility, get started here\\.\n\n` +
         `*Additional Info:*\n\n` +
