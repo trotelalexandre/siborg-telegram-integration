@@ -1,15 +1,10 @@
-import { BASE_URL, CHAIN_ID, chatIdsKey, TEST_MODE_ENABLED } from "../src/env";
+import { BASE_URL, CHAIN_ID, chatIdsKey } from "../src/env";
 import { bot } from "../src/bot";
 import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { kv } from "@vercel/kv";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (!TEST_MODE_ENABLED) {
-    res.status(403).json({ message: "Cron job is not enabled." });
-    return;
-  }
-
   try {
     const chatIds = await kv.get<number[]>("chatIds");
 
