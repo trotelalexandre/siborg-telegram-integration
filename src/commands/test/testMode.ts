@@ -1,8 +1,8 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
-import { TEST_ENV } from "../../env";
+import { TEST_MODE_ENABLED } from "../../env";
 
 export const testModeCommand = (bot: Bot<Context, Api<RawApi>>) => {
-  if (TEST_ENV) {
+  if (TEST_MODE_ENABLED) {
     bot.command("testmode", async (ctx) => {
       await ctx.reply("Test mode is enabled.");
     });
