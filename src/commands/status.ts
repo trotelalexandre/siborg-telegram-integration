@@ -19,7 +19,7 @@ export const statusCommand = (bot: Bot<Context, Api<RawApi>>) => {
         `*WEBHOOK_URL*: ${WEBHOOK_URL}\n\n` +
         `*Environment Variables*: ${ALL_ENV ? "All set" : "Missing"}\n\n` +
         `*Environment*: ${process.env.NODE_ENV}\n\n` +
-        `*Note*: This bot is still in development. We appreciate your feedback and suggestions.`,
+        `*Note*: This bot is still in development\\. We appreciate your feedback and suggestions\\.`,
 
       {
         parse_mode: "MarkdownV2",
