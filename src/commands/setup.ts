@@ -30,7 +30,16 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
       const frequency: number = 1;
 
-      await saveConfiguration(chatId, frequency, offerId);
+      try {
+        await saveConfiguration(chatId, frequency, offerId);
+      } catch (error) {
+        console.error("Error saving configuration:", error);
+        await ctx.reply("Error saving configuration.");
+      }
+
+      await ctx.reply(
+        `Configuration saved. I will publish the ad every ${frequency} minutes.`
+      );
     } else {
       if (!ctx.match) {
         await ctx.reply(
@@ -63,7 +72,16 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
         return;
       }
 
-      await saveConfiguration(chatId, frequency, offerId);
+      try {
+        await saveConfiguration(chatId, frequency, offerId);
+      } catch (error) {
+        console.error("Error saving configuration:", error);
+        await ctx.reply("Error saving configuration.");
+      }
+
+      await ctx.reply(
+        `Configuration saved. I will publish the ad every ${frequency} minutes.`
+      );
     }
   });
 };
