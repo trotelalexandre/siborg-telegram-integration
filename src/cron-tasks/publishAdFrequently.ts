@@ -3,7 +3,7 @@ import fetchAd from "../utils/fetchAd";
 import { BASE_URL, CHAIN_ID } from "../env";
 import type { CommandContext, Context } from "grammy";
 
-export const publishAdFrequentlyCommand = async (
+export const publishAdFrequentlyTask = async (
   ctx: CommandContext<Context>,
   frequency: number,
   offerId: number
