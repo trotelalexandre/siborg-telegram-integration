@@ -6,23 +6,35 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
     const chatId = ctx?.chat?.id;
 
     if (!chatId) {
-      await ctx.reply("This command is only available in a group chat.");
+      await ctx
+        .reply("This command is only available in a group chat.")
+        .catch((error) => {
+          console.error("Error caught:", error);
+        });
       return;
     }
 
     if (!ctx.match) {
-      await ctx.reply(
-        "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
-      );
+      await ctx
+        .reply(
+          "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
+        )
+        .catch((error) => {
+          console.error("Error caught:", error);
+        });
       return;
     }
 
     const args: string[] = ctx.match.split(" ");
 
     if (args.length < 2) {
-      await ctx.reply(
-        "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
-      );
+      await ctx
+        .reply(
+          "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
+        )
+        .catch((error) => {
+          console.error("Error caught:", error);
+        });
       return;
     }
 
@@ -30,24 +42,38 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
     const value = parseInt(args[1]);
 
     if (isNaN(value)) {
-      await ctx.reply(
-        "Please provide a valid number for the frequency or offer id."
-      );
+      await ctx
+        .reply("Please provide a valid number for the frequency or offer id.")
+        .catch((error) => {
+          console.error("Error caught:", error);
+        });
       return;
     }
 
     if (key === "frequency") {
-      await changeFrequency(chatId, value, ctx);
+      await changeFrequency(chatId, value, ctx).catch((error) => {
+        console.error("Error caught:", error);
+      });
     } else if (key === "offerId") {
-      await changeOffer(chatId, value, ctx);
+      await changeOffer(chatId, value, ctx).catch((error) => {
+        console.error("Error caught:", error);
+      });
     } else {
-      await ctx.reply(
-        "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
-      );
+      await ctx
+        .reply(
+          "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
+        )
+        .catch((error) => {
+          console.error("Error caught:", error);
+        });
       return;
     }
 
-    await ctx.reply(`Configuration updated. ${key} set to ${value}.`);
+    await ctx
+      .reply(`Configuration updated. ${key} set to ${value}.`)
+      .catch((error) => {
+        console.error("Error caught:", error);
+      });
   });
 };
 
