@@ -19,8 +19,6 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
     const args: string[] = ctx.match.split(" ");
 
-    await ctx.reply(`Checking args: ${args}`);
-
     if (args.length < 2) {
       await ctx.reply(
         "Please provide the frequency or offer id, and the value. Example: /change [frequency|offerId] [value]"
@@ -30,8 +28,6 @@ export const changeCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
     const key = args[0];
     const value = parseInt(args[1]);
-
-    await ctx.reply(`Updating configuration with ${key} set to ${value}...`);
 
     if (isNaN(value)) {
       await ctx.reply(
