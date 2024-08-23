@@ -1,7 +1,7 @@
 import type { Api, Bot, Context, RawApi } from "grammy";
 
-export const suggestCommands = (bot: Bot<Context, Api<RawApi>>) => {
-  bot.api.setMyCommands([
+export const suggestCommands = async (bot: Bot<Context, Api<RawApi>>) => {
+  await bot.api.setMyCommands([
     {
       command: "start",
       description: "Get started to manage your offers, tokens, and ads.",
@@ -23,14 +23,9 @@ export const suggestCommands = (bot: Bot<Context, Api<RawApi>>) => {
         "Manage your offers and tokens here. Example: /manage [address]",
     },
     {
-      command: "changeFrequency",
+      command: "change",
       description:
-        "Change the frequency of the ad display. Example: /changeFrequency [frequency]",
-    },
-    {
-      command: "changeOffer",
-      description:
-        "Change the offer id to display. Example: /changeOffer [offerId]",
+        "Change the frequency or offer id of the ad display. Example: /change [frequency|offerId] [value]",
     },
   ]);
 };
