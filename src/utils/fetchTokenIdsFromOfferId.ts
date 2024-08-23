@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RELAYER_API_URL } from "../relayer";
+import { RELAYER_API_URL } from "../relayer/config";
 
 export default async function fetchTokenIdsFromOfferId(
   offerId: number

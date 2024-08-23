@@ -1,6 +1,6 @@
 import axios from "axios";
 import { randomInt } from "crypto";
-import { RELAYER_API_URL } from "../relayer";
+import { RELAYER_API_URL } from "../relayer/config";
 
 export default async function fetchAd(
   offerId: number
