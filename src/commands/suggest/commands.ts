@@ -14,7 +14,7 @@ export const suggestCommands = async (bot: Bot<Context, Api<RawApi>>) => {
       {
         command: "setup",
         description:
-          "Setup the bot to display ads on your channel. Example: /setup [offerId] [frequency]",
+          "Setup the bot to display ads on your channel. (Only available in group chats.)",
       },
       {
         command: "business",
@@ -25,11 +25,6 @@ export const suggestCommands = async (bot: Bot<Context, Api<RawApi>>) => {
         command: "manage",
         description:
           "Manage your offers and tokens here. Example: /manage [address]",
-      },
-      {
-        command: "change",
-        description:
-          "Change the frequency or offer id of the ad display. Example: /change [frequency|offerId] [value]",
       },
       {
         command: "clean",

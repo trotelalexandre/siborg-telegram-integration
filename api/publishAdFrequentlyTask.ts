@@ -1,65 +1,86 @@
-import { BASE_URL, CHAIN_ID, chatIdsKey } from "../src/env";
+import { BASE_URL, CHAIN_ID, THIRDWEB_SECRET_KEY } from "../src/env";
 import { bot } from "../src/bot";
 import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { kv } from "@vercel/kv";
+import { gql, useQuery, ApolloClient, InMemoryCache } from "@apollo/client";
+import { ThirdwebStorage } from "@thirdweb-dev/storage";
+
+const GET_AD_OFFERS = gql`
+  query GetAdOffers {
+    adOffers {
+      id
+      metadataURL
+    }
+  }
+`;
+
+const endpoint = `https://relayer.dsponsor.com/api/${CHAIN_ID}/graph`;
+
+const client = new ApolloClient({
+  uri: endpoint,
+  cache: new InMemoryCache(),
+});
+
+const storage = new ThirdwebStorage({
+  clientId: THIRDWEB_SECRET_KEY,
+});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const chatIds = await kv.get<number[]>(chatIdsKey);
+    const { data } = await useQuery(GET_AD_OFFERS);
+    const offers = data?.adOffers;
+    console.log("Data fetched:", data);
 
-    if (!chatIds || chatIds.length === 0) {
-      res.status(404).json({ message: "No chat ids found." });
-      return;
-    }
+    const offersMetadata = await Promise.all(
+      offers.map(async (offer: any) => {
+        const metadata = await storage?.downloadJSON(offer?.metadataURL);
 
-    for (const chatId of chatIds) {
-      const config = (await kv.get(chatId?.toString())) as {
-        frequency: number;
-        offerId: number;
-        lastPublish: number;
-      };
+        return {
+          offerId: offer?.id,
+          telegramIntegration: metadata?.offer?.telegramIntegration,
+        };
+      })
+    );
 
-      if (!config) {
-        console.warn(`Configuration not found for chat id: ${chatId}`);
-        continue;
-      }
+    for (const offer of offersMetadata) {
+      if (
+        offer?.telegramIntegration &&
+        Array.isArray(offer?.telegramIntegration?.chatIds)
+      ) {
+        for (const chatId of offer.telegramIntegration.chatIds) {
+          if (!offer?.telegramIntegration?.enabled) {
+            console.warn(
+              `Telegram integration is disabled for offer id: ${offer.offerId}`
+            );
+            continue;
+          }
 
-      const now = Date.now();
-      const timeSinceLastPublish = now - config.lastPublish;
+          console.log(`Fetching ad for chat id: ${chatId}`);
 
-      if (timeSinceLastPublish < config.frequency * 60 * 1000) {
-        console.log(`Not yet time to publish the ad for chat id: ${chatId}`);
-        continue;
-      }
+          const ad = await fetchAd(offer?.offerId);
 
-      console.log(`Config for chat id: ${chatId}`, config);
+          if (!ad) {
+            console.warn(`No ads found for offer id: ${offer.offerId}`);
+            continue;
+          }
 
-      const ad = await fetchAd(config.offerId);
+          await bot.api.sendPhoto(chatId, ad.image, {
+            caption: `Check out this ad! ${ad.link}`,
+          });
 
-      if (!ad) {
-        console.warn(`No ads found for offer id: ${config.offerId}`);
-        continue;
-      }
+          await bot.api.sendMessage(
+            chatId,
+            `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${offer?.offerId}`,
+            {
+              link_preview_options: {
+                is_disabled: true,
+              },
+            }
+          );
 
-      await bot.api.sendPhoto(chatId, ad.image, {
-        caption: `Check out this ad! ${ad.link}`,
-      });
-
-      await bot.api.sendMessage(
-        chatId,
-        `Do you want to display your ad too? Check out ${BASE_URL}/${CHAIN_ID}/offer/${config.offerId}`,
-        {
-          link_preview_options: {
-            is_disabled: true,
-          },
+          console.log(`Ad fetched and displayed on chat id: ${chatId}`);
         }
-      );
-
-      console.log(`Ad fetched and displayed on chat id: ${chatId}`);
-
-      config.lastPublish = now;
-      await kv.set(chatId?.toString(), config);
+      }
     }
 
     res.status(200).json({ message: "Ad fetched and displayed." });

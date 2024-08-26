@@ -11,7 +11,6 @@ import { TELEGRAM_BOT_TOKEN } from "../src/env";
 import { initMenus } from "../src/menus/init/initMenus";
 import { testModeCommand } from "./commands/test/testMode";
 import { statusCommand } from "./commands/status";
-import { changeCommand } from "./commands/change";
 import { cleanCommand } from "./commands/clean";
 
 if (!TELEGRAM_BOT_TOKEN) {
@@ -30,7 +29,6 @@ try {
   helpCommand(bot);
   cleanCommand(bot);
   setupCommand(bot);
-  changeCommand(bot);
   manageCommand(bot);
   businessCommand(bot);
   statusCommand(bot);
