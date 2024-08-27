@@ -44,7 +44,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    const offersMetadata = await Promise.all(
+    const offersMetadata: {
+      offerId: string;
+      telegramIntegration: {
+        enabled: boolean;
+        telegramChannels: number[];
+      };
+    }[] = await Promise.all(
       offers?.map(async (offer: any) => {
         const metadata = await storage?.downloadJSON(offer?.metadataURL);
 
