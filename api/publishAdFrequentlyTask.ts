@@ -22,7 +22,7 @@ const storage = new ThirdwebStorage({
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const { data } = await axios.post(endpoint, {
+    const data = await axios.post(endpoint, {
       query: GET_AD_OFFERS,
     }, {
       headers: {
