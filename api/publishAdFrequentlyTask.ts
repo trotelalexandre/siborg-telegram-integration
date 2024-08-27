@@ -55,14 +55,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     );
 
-    return res.status(200).json({ offersMetadata });
-
     for (const offer of offersMetadata) {
       if (
         offer?.telegramIntegration &&
-        Array.isArray(offer?.telegramIntegration?.chatIds)
+        Array.isArray(offer?.telegramIntegration?.telegramChannels)
       ) {
-        for (const chatId of offer.telegramIntegration.chatIds) {
+        for (const chatId of offer?.telegramIntegration?.telegramChannels) {
           if (!offer?.telegramIntegration?.enabled) {
             console.warn(
               `Telegram integration is disabled for offer id: ${offer.offerId}`
