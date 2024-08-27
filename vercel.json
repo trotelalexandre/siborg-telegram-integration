@@ -5,7 +5,8 @@
   "crons": [
     {
       "path": "/api/publishAdFrequentlyTask",
-      "schedule": "*/1 * * * *"
+      "schedule": "0 9 * * *",
+      "timezone": "Europe/Paris"
     }
   ]
 }
