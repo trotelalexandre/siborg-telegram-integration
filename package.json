@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/client": "^3.11.4",
     "@grammyjs/menu": "^1.2.2",
     "@thirdweb-dev/storage": "^2.0.15",
     "axios": "^1.7.4",
@@ -23,7 +22,6 @@
     "grammy-middlewares": "^1.0.11",
     "graphql": "^16.9.0",
     "node-cron": "^3.0.3",
-    "react": "^18.3.1",
     "viem": "^2.20.0"
   },
   "devDependencies": {

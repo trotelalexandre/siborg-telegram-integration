@@ -2,11 +2,10 @@ import { BASE_URL, CHAIN_ID, THIRDWEB_SECRET_KEY } from "../src/env";
 import { bot } from "../src/bot";
 import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { gql, useQuery, ApolloClient, InMemoryCache } from "@apollo/client";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
-import React from "react";
+import axios from "axios";
 
-const GET_AD_OFFERS = gql`
+const GET_AD_OFFERS = `
   query GetAdOffers {
     adOffers {
       id
@@ -17,18 +16,17 @@ const GET_AD_OFFERS = gql`
 
 const endpoint = `https://relayer.dsponsor.com/api/${CHAIN_ID}/graph`;
 
-const client = new ApolloClient({
-  uri: endpoint,
-  cache: new InMemoryCache(),
-});
-
 const storage = new ThirdwebStorage({
   clientId: THIRDWEB_SECRET_KEY,
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const { data } = await useQuery(GET_AD_OFFERS);
+    const { data } = await axios.get(endpoint, {
+      params: {
+        query: GET_AD_OFFERS,
+      },
+    });
     const offers = data?.adOffers;
     console.log("Data fetched:", data);
 
