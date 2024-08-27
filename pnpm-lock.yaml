@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.11.4
-        version: 3.11.4(graphql@16.9.0)
+        version: 3.11.4(graphql@16.9.0)(react@18.3.1)
       '@grammyjs/menu':
         specifier: ^1.2.2
         version: 1.2.2(grammy@1.29.0)
@@ -38,6 +38,9 @@ importers:
       node-cron:
         specifier: ^3.0.3
         version: 3.0.3
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
       viem:
         specifier: ^2.20.0
         version: 2.20.0(typescript@5.5.4)
@@ -1117,6 +1120,10 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  react@18.3.1:
+    resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
+    engines: {node: '>=0.10.0'}
+
   readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
     engines: {node: '>= 6'}
@@ -1473,7 +1480,7 @@ snapshots:
 
   '@adraffy/ens-normalize@1.10.0': {}
 
-  '@apollo/client@3.11.4(graphql@16.9.0)':
+  '@apollo/client@3.11.4(graphql@16.9.0)(react@18.3.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@wry/caches': 1.0.1
@@ -1484,12 +1491,14 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       optimism: 0.18.0
       prop-types: 15.8.1
-      rehackt: 0.1.0
+      rehackt: 0.1.0(react@18.3.1)
       response-iterator: 0.2.6
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.7.0
       zen-observable-ts: 1.2.5
+    optionalDependencies:
+      react: 18.3.1
     transitivePeerDependencies:
       - '@types/react'
 
@@ -2510,6 +2519,10 @@ snapshots:
 
   react-is@16.13.1: {}
 
+  react@18.3.1:
+    dependencies:
+      loose-envify: 1.4.0
+
   readable-stream@3.6.2:
     dependencies:
       inherits: 2.0.4
@@ -2520,7 +2533,9 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
-  rehackt@0.1.0: {}
+  rehackt@0.1.0(react@18.3.1):
+    optionalDependencies:
+      react: 18.3.1
 
   require-directory@2.1.1: {}
 
