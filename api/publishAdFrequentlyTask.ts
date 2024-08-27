@@ -37,14 +37,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .then((response) => response.data);
 
     const offers: any[] = response?.data?.adOffers;
-    console.log("Offers:", offers);
 
-    await bot.api.sendMessage(
-      -4552660854,
-      `Fetching and displaying ads for ${offers?.length} offers...`
-    );
-
-    if (!offers?.length) {
+    if (offers?.length === 0) {
       console.warn("No offers found.");
       res.status(200).json({ message: "No offers found." });
       return;
@@ -60,6 +54,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         };
       })
     );
+
+    return res.status(200).json({ offersMetadata });
 
     for (const offer of offersMetadata) {
       if (
