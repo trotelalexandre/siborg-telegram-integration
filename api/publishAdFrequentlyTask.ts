@@ -45,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const offersMetadata: {
-      offerId: string;
+      offerId: number;
       telegramIntegration: {
         enabled: boolean;
         telegramChannels: number[];
@@ -55,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const metadata = await storage?.downloadJSON(offer?.metadataURL);
 
         return {
-          offerId: offer?.id,
+          offerId: Number(offer?.id),
           telegramIntegration: metadata?.offer?.telegramIntegration,
         };
       })
