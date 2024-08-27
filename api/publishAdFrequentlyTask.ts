@@ -36,6 +36,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       )
       .then((response) => response.data);
 
+    console.log("Data:", data);
+
     const offers: any[] = data?.adOffers;
     console.log("Offers:", offers);
 
