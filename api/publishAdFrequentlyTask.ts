@@ -39,6 +39,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const offers: any[] = response?.data?.adOffers;
     console.log("Offers:", offers);
 
+    await bot.api.sendMessage(
+      "chat id",
+      `Fetching and displaying ads for ${offers?.length} offers...`
+    );
+
     if (!offers?.length) {
       console.warn("No offers found.");
       res.status(200).json({ message: "No offers found." });
