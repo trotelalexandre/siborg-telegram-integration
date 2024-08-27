@@ -36,11 +36,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       )
       .then((response) => response.data);
 
-    const offers = data?.adOffers;
+    const offers: any[] = data?.adOffers;
     console.log("Data fetched:", data);
 
     const offersMetadata = await Promise.all(
-      offers.map(async (offer: any) => {
+      offers?.map(async (offer: any) => {
         const metadata = await storage?.downloadJSON(offer?.metadataURL);
 
         return {
