@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log("Offers:", offers);
 
     await bot.api.sendMessage(
-      "chat id",
+      -4552660854,
       `Fetching and displaying ads for ${offers?.length} offers...`
     );
 
