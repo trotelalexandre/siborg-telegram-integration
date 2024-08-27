@@ -62,10 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     );
 
     for (const offer of offersMetadata) {
-      if (
-        offer?.telegramIntegration &&
-        Array.isArray(offer?.telegramIntegration?.telegramChannels)
-      ) {
+      if (offer?.telegramIntegration) {
         for (const chatId of offer?.telegramIntegration?.telegramChannels) {
           if (!offer?.telegramIntegration?.enabled) {
             console.warn(
@@ -73,8 +70,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             );
             continue;
           }
-
-          console.log(`Fetching ad for chat id: ${chatId}`);
 
           await bot.api.sendMessage(
             chatId,
