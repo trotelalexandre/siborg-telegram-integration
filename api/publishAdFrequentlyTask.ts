@@ -76,6 +76,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
           console.log(`Fetching ad for chat id: ${chatId}`);
 
+          await bot.api.sendMessage(
+            chatId,
+            `Fetching ad for offer id: ${offer?.offerId}...`
+          );
+
           const ad = await fetchAd(offer?.offerId);
 
           if (!ad) {
