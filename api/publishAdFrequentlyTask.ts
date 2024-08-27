@@ -39,6 +39,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const offers: any[] = data?.adOffers;
     console.log("Offers:", offers);
 
+    if (!offers?.length) {
+      console.warn("No offers found.");
+      res.status(200).json({ message: "No offers found." });
+      return;
+    }
+
     const offersMetadata = await Promise.all(
       offers?.map(async (offer: any) => {
         const metadata = await storage?.downloadJSON(offer?.metadataURL);
