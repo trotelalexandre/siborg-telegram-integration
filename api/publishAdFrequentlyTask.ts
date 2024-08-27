@@ -4,6 +4,7 @@ import fetchAd from "../src/utils/fetchAd";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { gql, useQuery, ApolloClient, InMemoryCache } from "@apollo/client";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
+import React from "react";
 
 const GET_AD_OFFERS = gql`
   query GetAdOffers {
