@@ -13,5 +13,9 @@ export const startCommand = (bot: Bot<Context, Api<RawApi>>) => {
       .catch((error) => {
         console.error("Error caught:", error);
       });
+
+    await ctx.reply(`Chat ID: ${ctx.chat.id}`).catch((error) => {
+      console.error("Error caught:", error);
+    });
   });
 };

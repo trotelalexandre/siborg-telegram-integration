@@ -12,6 +12,7 @@ import { initMenus } from "../src/menus/init/initMenus";
 import { testModeCommand } from "./commands/test/testMode";
 import { statusCommand } from "./commands/status";
 import { cleanCommand } from "./commands/clean";
+import { onlyAdmin } from "grammy-middlewares";
 
 if (!TELEGRAM_BOT_TOKEN) {
   throw new Error("TELEGRAM_BOT_TOKEN is not defined");
@@ -20,6 +21,9 @@ if (!TELEGRAM_BOT_TOKEN) {
 export const bot = new Bot(TELEGRAM_BOT_TOKEN);
 
 try {
+  // middlewares
+  bot.use(onlyAdmin((ctx) => ctx.reply("Only admins can use this command.")));
+
   // init menus
   initMenus(bot);
 

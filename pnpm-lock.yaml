@@ -29,6 +29,9 @@ importers:
       grammy:
         specifier: ^1.29.0
         version: 1.29.0
+      grammy-middlewares:
+        specifier: ^1.0.11
+        version: 1.0.11
       graphql:
         specifier: ^16.9.0
         version: 16.9.0
@@ -117,6 +120,10 @@ packages:
     engines: {node: '>=12.20.0 || >=14.13.1'}
     peerDependencies:
       grammy: ^1.0.0
+
+  '@grammyjs/runner@1.0.4':
+    resolution: {integrity: sha512-77IE+2Gg0UHa9MNZ8wsculxJpzUDcHTrMg7OLbKoQ8jWKFxX78sdxRBwL+FK3NvHZ15YnXsnxesV43xgbOhteA==}
+    engines: {node: '>=12.20.0 || >=14.13.1'}
 
   '@grammyjs/types@3.13.0':
     resolution: {integrity: sha512-Oyq6fBuVPyX6iWvxT/0SxJvNisC9GHUEkhZ60qJBHRmwNX4hIcOfhrNEahicn3K9SYyreGPVw3d9wlLRds83cw==}
@@ -536,6 +543,10 @@ packages:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
 
+  envalid@7.3.1:
+    resolution: {integrity: sha512-KL1YRwn8WcoF/Ty7t+yLLtZol01xr9ZJMTjzoGRM8NaSU+nQQjSWOQKKJhJP2P57bpdakJ9jbxqQX4fGTOicZg==}
+    engines: {node: '>=8.12'}
+
   es-define-property@1.0.0:
     resolution: {integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==}
     engines: {node: '>= 0.4'}
@@ -780,6 +791,9 @@ packages:
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+
+  grammy-middlewares@1.0.11:
+    resolution: {integrity: sha512-XASAQK25YOHoLKV0G1UEBH07oSc0nFIMltntyBV1BI5C2sEYKfcYkOp0xGt+SFT5EvLAbIHnyOy+riBnARKfhQ==}
 
   grammy@1.29.0:
     resolution: {integrity: sha512-lj/6K6TGmVAdOpHj0PVFK7N37EGe76bpkbgvN+yqCqXYBIwuQosTe7qLhCls7/4pbDxf2+UVSqSXcOILgGGKWQ==}
@@ -1319,6 +1333,9 @@ packages:
   tsconfig@7.0.0:
     resolution: {integrity: sha512-vZXmzPrL+EmC4T/4rVlT2jNVMWCi/O4DIiSj3UHg1OE5kCKbk4mfrXc6dZksLgRM/TZlKnousKH9bbTazUWRRw==}
 
+  tslib@2.3.1:
+    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
@@ -1497,6 +1514,10 @@ snapshots:
   '@grammyjs/menu@1.2.2(grammy@1.29.0)':
     dependencies:
       grammy: 1.29.0
+
+  '@grammyjs/runner@1.0.4':
+    dependencies:
+      abort-controller: 3.0.0
 
   '@grammyjs/types@3.13.0': {}
 
@@ -1968,6 +1989,10 @@ snapshots:
 
   encodeurl@1.0.2: {}
 
+  envalid@7.3.1:
+    dependencies:
+      tslib: 2.3.1
+
   es-define-property@1.0.0:
     dependencies:
       get-intrinsic: 1.2.4
@@ -2202,6 +2227,15 @@ snapshots:
       get-intrinsic: 1.2.4
 
   graceful-fs@4.2.11: {}
+
+  grammy-middlewares@1.0.11:
+    dependencies:
+      '@grammyjs/runner': 1.0.4
+      envalid: 7.3.1
+      grammy: 1.29.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
 
   grammy@1.29.0:
     dependencies:
@@ -2704,6 +2738,8 @@ snapshots:
       '@types/strip-json-comments': 0.0.30
       strip-bom: 3.0.0
       strip-json-comments: 2.0.1
+
+  tslib@2.3.1: {}
 
   tslib@2.7.0: {}
 

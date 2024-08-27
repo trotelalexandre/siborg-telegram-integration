@@ -15,7 +15,7 @@ export const setupCommand = (bot: Bot<Context, Api<RawApi>>) => {
 
     await ctx
       .reply(
-        `Your chat id is: ${chatId}. You can now use this chat id to create or update your offers. (Type /manage [address] to start.)`
+        `Your chat id is: ${chatId}. You can now use this chat id to create or update your offers. (Type /manage [address] to manage your offers.)`
       )
       .catch((error) => {
         console.error("Error caught:", error);
