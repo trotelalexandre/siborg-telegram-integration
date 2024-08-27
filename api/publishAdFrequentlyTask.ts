@@ -71,10 +71,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             continue;
           }
 
-          await bot.api.sendMessage(
+          const message = await bot.api.sendMessage(
             chatId,
             `Fetching ad for offer id: ${offer?.offerId}...`
           );
+
+          setTimeout(() => {
+            bot.api.deleteMessage(chatId, message?.message_id);
+          }, 5000);
 
           const ad = await fetchAd(offer?.offerId);
 
