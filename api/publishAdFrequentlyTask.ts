@@ -28,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       headers: {
         "Content-Type": "application/json
       }
-    });
+    }).then((response) => response.data);
 
     const offers = data?.adOffers;
     console.log("Data fetched:", data);
