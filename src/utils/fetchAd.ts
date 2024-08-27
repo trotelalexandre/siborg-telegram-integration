@@ -14,7 +14,6 @@ export default async function fetchAd(
   }
 
   const fetchedAds = response?.data;
-  console.log("Fetched ads:", fetchedAds);
 
   const acceptedAds = Object?.values(fetchedAds)?.filter((ad: any) => {
     return Object?.keys(ad)?.every((param) => {
